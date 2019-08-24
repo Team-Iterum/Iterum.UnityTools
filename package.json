@@ -1,0 +1,12 @@
+{
+  "name": "com.magistr.iterum",
+  "displayName": "Iterum Framework",
+  "version": "1.0.0",
+  "unity": "2018.1",
+  "description": "Client tools for Iterum Server",
+  "keywords": [
+    "server",
+    "unity"
+  ],
+  "category": "Unity"
+}
