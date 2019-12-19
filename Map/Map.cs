@@ -50,7 +50,12 @@ namespace Magistr.WorldMap
             try
             {
                 BinaryFormatter formatter = new BinaryFormatter();
-                mapArchive.Objects = Entities.Select(e => new MapObject() { Position = (Vector3)e.Position, Rotation = (Quaternion)e.Rotation, Scale = (Vector3)e.Scale, ThingTypeId = e.ThingTypeId }).ToArray();
+                mapArchive.Objects = Entities.Select(e => new MapObject() { 
+                    Position = (Magistr.Math.Vector3)e.Position,
+                    Rotation = (Magistr.Math.Quaternion)e.Rotation,
+                    Scale = (Magistr.Math.Vector3)e.Scale,
+                    ThingTypeId = e.ThingTypeId 
+                    }).ToArray();
                 formatter.Serialize(fs, mapArchive);
             }
             catch (SerializationException e)
@@ -101,9 +106,9 @@ namespace Magistr.WorldMap
         struct MapObject
         {
             public int ThingTypeId;
-            public Vector3 Position;
-            public Quaternion Rotation;
-            public Vector3 Scale;
+            public Magistr.Math.Vector3 Position;
+            public Magistr.Math.Quaternion Rotation;
+            public Magistr.Math.Vector3 Scale;
         }
     }
 }
