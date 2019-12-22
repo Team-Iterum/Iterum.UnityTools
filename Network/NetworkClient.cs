@@ -19,7 +19,7 @@ using Magistr.Buffers;
 
 namespace Magistr.Network
 {
-    public delegate void RecieveNetworkMessage(ref NetworkMessage msg);
+    public delegate void ReceiveNetworkMessage(ref NetworkMessage msg);
     public class NetworkClient
     {
         public string statusDetailed;
@@ -41,12 +41,13 @@ namespace Magistr.Network
 #if WEBSOCKETS
         private WebSocket sockets;
 #endif
+        
         private Thread workerThread;
         private uint connection;
-        private bool IsRecieveRunning = false;
-        private const int RecieveThreadSleep = 5;
+        private bool isReceiveRunning;
+        private const int ReceiveThreadSleep = 5;
 
-        public event RecieveNetworkMessage Recieved;
+        public event ReceiveNetworkMessage Received;
         public event Action Connected;
         public event Action Disconnected;
         public event Action ProblemDetectedLocally;
@@ -57,7 +58,8 @@ namespace Magistr.Network
             Library.Initialize();
             #endif
         }
-        StringBuilder status = new StringBuilder(1024);
+
+        private StringBuilder status = new StringBuilder(1024);
         public void UpdateStats()
         {
             if (connection != 0)
@@ -82,7 +84,7 @@ namespace Magistr.Network
 
         public void Stop()
         {
-            if (!IsRecieveRunning) return;
+            if (!isReceiveRunning) return;
 #if VALVE_SOCKETS
             sockets?.CloseConnection(connection);
 
@@ -91,27 +93,27 @@ namespace Magistr.Network
 #if WEBSOCKETS
             sockets?.Close();
 #endif
-            IsRecieveRunning = false;
+            isReceiveRunning = false;
         }
 
         public void StartClient(string host, int port = 0)
         {
-            if (IsRecieveRunning) return;
+            if (isReceiveRunning) return;
 #if WEBSOCKETS
             // Create WebSocket instance
-            sockets = WebSocketFactory.CreateInstance(host);
+            sockets = WebSocketFactory.CreateInstance("ws://" + host + ":" + port);
             // Add OnOpen event listener
             sockets.OnOpen += () =>
             {
                 Connected?.Invoke();
                 Debug.Log("WS connected!");
-                Debug.Log("WS state: " + sockets.GetState().ToString());
+                Debug.Log("WS state: " + sockets.GetState());
             };
 
             // Add OnMessage event listener
-            sockets.OnMessage += (byte[] data) =>
+            sockets.OnMessage += data =>
             {
-                NetworkMessage msg = new NetworkMessage
+                var msg = new NetworkMessage
                 {
                     data = data,
                     channel = 0,
@@ -121,20 +123,24 @@ namespace Magistr.Network
                     timeReceived = 0,
                     userData = 0
                 };
-                Recieved?.Invoke(ref msg);
+                Received?.Invoke(ref msg);
             };
 
             // Add OnError event listener
-            sockets.OnError += (string errMsg) =>
+            sockets.OnError += errMsg =>
             {
-                Debug.Log("WS error: " + errMsg);
+                Debug.LogError("WS error: " + errMsg);
             };
 
             // Add OnClose event listener
-            sockets.OnClose += (WebSocketCloseCode code) =>
+            sockets.OnClose += code =>
             {
                 Disconnected?.Invoke();
-                Debug.Log("WS closed with code: " + code.ToString());
+
+                if(code == WebSocketCloseCode.Normal)
+                    Debug.Log("WS closed with code: " + code);
+                else
+                    Debug.LogError("WS closed with code: " + code);
             };
 
             // Connect to the server
@@ -188,21 +194,21 @@ namespace Magistr.Network
 #endif
         public static byte[] Compress(byte[] data)
         {
-            MemoryStream output = new MemoryStream();
-            using (var dstream = new GZipStream(output, System.IO.Compression.CompressionLevel.Optimal))
+            var output = new MemoryStream();
+            using (var stream = new GZipStream(output, System.IO.Compression.CompressionLevel.Optimal))
             {
-                dstream.Write(data, 0, data.Length);
+                stream.Write(data, 0, data.Length);
             }
             return output.ToArray();
         }
 
         public static byte[] Decompress(byte[] data)
         {
-            MemoryStream input = new MemoryStream(data);
-            MemoryStream output = new MemoryStream();
-            using (var dstream = new GZipStream(input, CompressionMode.Decompress))
+            var input = new MemoryStream(data);
+            var output = new MemoryStream();
+            using (var stream = new GZipStream(input, CompressionMode.Decompress))
             {
-                dstream.CopyTo(output);
+                stream.CopyTo(output);
             }
             return output.ToArray();
         }
@@ -216,7 +222,8 @@ namespace Magistr.Network
 #endif
 #if WEBSOCKETS
             var buffer = packet.Serialize();
-            Debug.Log("Sent " + buffer.Length + " first: " + buffer[0]);
+
+            //Debug.Log("Sent " + buffer.Length + " first: " + buffer[0]);
             sockets.Send(buffer);
             StaticBuffers.Release(buffer);
 

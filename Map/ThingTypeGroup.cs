@@ -1,4 +1,6 @@
-﻿#if UNITY_EDITOR
+﻿
+using Magistr.WorldMap.Editor;
+#if UNITY_EDITOR
 using EasyButtons;
 using System;
 using System.Collections;
@@ -56,15 +58,16 @@ namespace Magistr.Things.Editor
     public class ThingTypeGroup : MonoBehaviour
     {
 
-        
         [Header("Main data")]
         public ThingCategory Category = ThingCategory.Item;
         public string Description = string.Empty;
+        
         [Header("Generated data")]
-        public bool Created = false;
+        public bool Created;
         public Quaternion MapRotation;
         public Vector3 MapPosition;
         public int ThingTypeId = -1;
+
         [Header("Attributes")]
         public bool Ground;
         public bool Container;
@@ -84,10 +87,18 @@ namespace Magistr.Things.Editor
         public bool Dynamic;
 
         [Header("Additional data")]
-        public Magistr.Math.Vector3 Size;
+        public Math.Vector3 Size;
         public float Radius;
 
-        
+
+        public void ClearGenerated()
+        {
+            Created = false;
+            ThingTypeId = -1;
+            Created = false;
+            MapPosition = Vector3.zero;
+            MapRotation = Quaternion.identity;
+        }
 
         public ThingType Create()
         {
@@ -123,16 +134,20 @@ namespace Magistr.Things.Editor
         {
             if (GetComponent<MeshRenderer>())
             {
+                var bounds = GetComponent<MeshRenderer>().bounds;
+
                 if (Size.magnitude == 0)
-                    Size = (Magistr.Math.Vector3)GetComponent<MeshRenderer>().bounds.size;
+                    Size = (Math.Vector3)bounds.size;
                 if (Radius == 0)
-                    Radius = Mathf.Max(GetComponent<MeshRenderer>().bounds.extents.x, GetComponent<MeshRenderer>().bounds.extents.y, GetComponent<MeshRenderer>().bounds.extents.z);
+                    Radius = Mathf.Max(bounds.extents.x, bounds.extents.y, bounds.extents.z);
             }
             if(GetComponent<CapsuleCollider>())
             {
-                Size = (Magistr.Math.Vector3)new Vector3(0, GetComponent<CapsuleCollider>().height, 0);
-                Radius = GetComponent<CapsuleCollider>().radius;
+                var capsuleCollider = GetComponent<CapsuleCollider>();
+                Size = (Math.Vector3)new Vector3(0, capsuleCollider.height, 0);
+                Radius = capsuleCollider.radius;
             }
+
             if (string.IsNullOrEmpty(Description))
                 Description = gameObject.name;
         }
@@ -142,16 +157,20 @@ namespace Magistr.Things.Editor
         public void UpdateThingType()
         {
             if (ThingTypeId < 0) return;
+
             var tt = Create();
             ThingTypeManager.ThingTypes[ThingTypeId] = tt;
+            
             UpdatePrefab();
         }
 
         public GameObject UpdatePrefab()
         {
             if (ThingTypeId < 0) return null;
-            var prefab = PrefabUtility.SaveAsPrefabAsset(this.gameObject, "Assets/Content/Things/" + ThingTypeId + ".prefab");
+
+            var prefab = PrefabUtility.SaveAsPrefabAsset(this.gameObject, PacketGenerateMenu.AssetThings + ThingTypeId + ".prefab");
             DestroyImmediate(prefab.GetComponent<ThingTypeGroup>(), true);
+
             return prefab;
 
         }

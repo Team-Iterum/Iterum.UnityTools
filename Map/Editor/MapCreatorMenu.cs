@@ -1,103 +1,134 @@
-﻿#if UNITY_EDITOR
-using Magistr.Things;
-using Magistr.Things.Editor;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.AccessControl;
-using UnityEditor;
+using Magistr.Things;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using Magistr.Things.Editor;
+using UnityEditor;
 
 namespace Magistr.WorldMap.Editor
 {
     public static class PacketGenerateMenu
     {
+        private const string ThingsDir = @"";
 
-        const string thingsDir = @"";
+        private const string StreamingThings = "Assets/StreamingAssets/Things/";
+        public const string AssetContent = "Assets/Content/";
+        public const string AssetThings = AssetContent + "Things/";
 
-        [UnityEditor.MenuItem("Things/Clear things")]
+        [MenuItem("Things/Clear things")]
         public static void ClearThings()
         {
-            foreach (var item in GameObject.FindObjectsOfType<ThingTypeGroup>())
+            foreach (var item in Object.FindObjectsOfType<ThingTypeGroup>())
             {
-                item.ThingTypeId = -1;
-                item.Created = false;
-                item.MapPosition = Vector3.zero;
-                item.MapRotation = Quaternion.identity;
+                item.ClearGenerated();
             }
-            Directory.Delete("Assets/Content/Things", true);
-            AssetDatabase.DeleteAsset("Assets/Content/ThingTypes.asset");
+
+            DirectoryExt.DeleteIfExit(AssetThings, true);
+            AssetDatabase.DeleteAsset(AssetContent + "ThingTypes.asset");
+
             ThingTypeManager.ThingTypes.Clear();
+
+            AssetDatabase.Refresh();
             EditorSceneManager.MarkAllScenesDirty();
+            Debug.Log("Things cleared & removed");
         }
 
-        [UnityEditor.MenuItem("Things/Save map")]
+
+        [MenuItem("Things/Save map")]
         public static void SaveMap()
         {
-            Map map = new Map();
-
-            map.LoadObjectsFromCurrentScene();
-
-            Debug.Log(map.Entities.Count);
-
-            var filename = EditorUtility.SaveFilePanel("Save map", thingsDir, "Default", "map");
+            var filename = EditorUtility.SaveFilePanel("Save map", ThingsDir, "Default", "map");
             if (string.IsNullOrEmpty(filename)) return;
 
+            var map = new Map();
+            map.LoadObjectsFromCurrentScene();
             map.Save(File.OpenWrite(filename), Application.productName + "_Map");
+            
             AssetDatabase.Refresh();
+            Debug.Log("Map saved");
         }
 
-        [UnityEditor.MenuItem("Things/Save things")]
+
+        [MenuItem("Things/Save things")]
         public static void SaveThings()
         {
-            var filename = EditorUtility.SaveFilePanel("Save things", thingsDir, "Things", "dat");
-            var localFilename = Path.Combine("Assets/StreamingAssets/Things/" , Path.GetFileName(filename));
-
+            var filename = EditorUtility.SaveFilePanel("Save things", ThingsDir, "Things", "dat");
             if (string.IsNullOrEmpty(filename)) return;
-            int i = 0;
 
+            // create if not exist all paths
+            DirectoryExt.CreateIfNotExist(AssetContent);
+            DirectoryExt.CreateIfNotExist(AssetThings);
+            DirectoryExt.CreateIfNotExist(StreamingThings);
+
+            // package prefab-ref
             var package = ScriptableObject.CreateInstance<ThingTypePackage>();
-            package.ThingTypes = new System.Collections.Generic.List<GameObject>();
+            package.ThingTypes = new List<GameObject>();
 
-            if (!Directory.Exists("Assets/Content/Things"))
-            {
-                Directory.CreateDirectory("Assets/Content/Things");
-            }
-
-            if (!Directory.Exists("Assets/Content/Things"))
-            {
-                Directory.CreateDirectory("Assets/Content/Things");
-            }
+            //
             var comparer = new ThingTypeGroupComparer();
-            Dictionary<ThingTypeGroup, ThingTypeGroup> added = new Dictionary<ThingTypeGroup, ThingTypeGroup>(comparer);
-            var groups = GameObject.FindObjectsOfType<ThingTypeGroup>();
-            
-            
+            var added = new Dictionary<ThingTypeGroup, ThingTypeGroup>(comparer);
+
+            var groups = Object.FindObjectsOfType<ThingTypeGroup>();
+
+            int i = 0;
             foreach (var item in groups)
             {
-                
+
                 if (!added.ContainsKey(item))
                 {
                     item.ThingTypeId = i;
                     item.Created = true;
+
                     ThingTypeManager.ThingTypes.Add(i, item.Create());
+
                     package.ThingTypes.Add(item.UpdatePrefab());
-                    i++;
                     added.Add(item, item);
-                } else
+                    
+                    i++;
+                }
+                else
                 {
                     item.ThingTypeId = added[item].ThingTypeId;
                     item.Created = true;
                 }
             }
-            AssetDatabase.CreateAsset(package, "Assets/Content/ThingTypes.asset");
+            
+            // save unity-package with references to prefabs
+            AssetDatabase.CreateAsset(package, AssetContent + "ThingTypes.asset");
 
+            // save to server
             ThingTypeManager.Save(File.OpenWrite(filename), Application.productName + "_Things", 1, false);
-            ThingTypeManager.Save(File.OpenWrite(localFilename), Application.productName + "_Things", 1, true);
+
+            // save streaming
+            var streamingFilename = Path.Combine(StreamingThings, Path.GetFileName(filename));
+            ThingTypeManager.Save(File.OpenWrite(streamingFilename), Application.productName + "_Things", 1, true);
+
+
             AssetDatabase.Refresh();
             EditorSceneManager.MarkAllScenesDirty();
+            Debug.Log("Things saved");
+        }
+
+        
+    }
+
+    internal class DirectoryExt
+    {
+        public static void CreateIfNotExist(string path)
+        {
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+        }
+
+        public static void DeleteIfExit(string path, bool recursive)
+        {
+            if (Directory.Exists(path))
+                Directory.Delete(path, recursive);
         }
     }
 }
+
 #endif

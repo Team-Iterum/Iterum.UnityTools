@@ -6,7 +6,7 @@ namespace Magistr.Things
 {
     public struct Thing : IThing
     {
-        private GameObject UnityObject;
+        private GameObject unityObject;
         public Vector3 Position { get; set; }
         public Quaternion Rotation { get; set; }
         public Vector3 Scale { get; set; }
@@ -18,26 +18,26 @@ namespace Magistr.Things
             Rotation = rotation;
             Scale = scale;
             ThingTypeId = id;
-            UnityObject = default;
+            unityObject = default;
 
         }
 
         public void SyncTransform()
         {
-            UnityObject.transform.position = Position;
-            UnityObject.transform.rotation = Rotation;
+            unityObject.transform.position = Position;
+            unityObject.transform.rotation = Rotation;
         }
 
         public void Create()
         {
             var thingType = ThingTypeManager.GetTningType(ThingTypeId);
 
-            GameObject go = new GameObject(ThingTypeId.ToString());
+            var go = new GameObject(ThingTypeId.ToString());
         }
 
         public void Destroy()
         {
-            GameObject.Destroy(UnityObject);
+            Object.Destroy(unityObject);
         }
     }
 }
