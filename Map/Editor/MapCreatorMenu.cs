@@ -68,8 +68,7 @@ namespace Magistr.WorldMap.Editor
             package.ThingTypes = new List<GameObject>();
 
             //
-            var comparer = new ThingTypeGroupComparer();
-            var added = new Dictionary<ThingTypeGroup, ThingTypeGroup>(comparer);
+            var added = new Dictionary<ThingTypeGroup, ThingTypeGroup>(ThingTypeGroup.ThingTypeGroupComparer);
 
             var groups = Object.FindObjectsOfType<ThingTypeGroup>();
 
@@ -100,15 +99,16 @@ namespace Magistr.WorldMap.Editor
             AssetDatabase.CreateAsset(package, AssetContent + "ThingTypes.asset");
 
             // save to server
-            ThingTypeManager.Save(File.OpenWrite(filename), Application.productName + "_Things", 1, false);
+            ThingTypeManager.Save(File.OpenWrite(filename), Application.productName + "_Things", 1);
 
             // save streaming
             var streamingFilename = Path.Combine(StreamingThings, Path.GetFileName(filename));
-            ThingTypeManager.Save(File.OpenWrite(streamingFilename), Application.productName + "_Things", 1, true);
+            ThingTypeManager.Save(File.OpenWrite(streamingFilename), Application.productName + "_Things", 1);
 
 
             AssetDatabase.Refresh();
             EditorSceneManager.MarkAllScenesDirty();
+
             Debug.Log("Things saved");
         }
 

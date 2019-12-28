@@ -15,20 +15,15 @@ namespace Magistr.WorldMap
 {
     public class Map
     {
-        public List<IThing> Entities = new List<IThing>();
+        public List<Thing> Entities = new List<Thing>();
 
-        public Map()
-        {
-        }
-
-        public void Add(IThing t)
+        public void Add(Thing t)
         {
             Entities.Add(t);
         }
 
-        public void Remove(IThing t)
+        public void Remove(Thing t)
         {
-            t.Destroy();
             Entities.Remove(t);
         }
 
@@ -49,18 +44,19 @@ namespace Magistr.WorldMap
 
             try
             {
-                BinaryFormatter formatter = new BinaryFormatter();
+                var formatter = new BinaryFormatter();
                 mapArchive.Objects = Entities.Select(e => new MapObject() { 
                     Position = (Magistr.Math.Vector3)e.Position,
                     Rotation = (Magistr.Math.Quaternion)e.Rotation,
                     Scale = (Magistr.Math.Vector3)e.Scale,
                     ThingTypeId = e.ThingTypeId 
                     }).ToArray();
+
                 formatter.Serialize(fs, mapArchive);
             }
             catch (SerializationException e)
             {
-                UnityEngine.Debug.LogError("Failed to serializer MapArchive. Reason: " + e.Message);
+                Debug.LogError("Failed to serializer MapArchive. Reason: " + e.Message);
                 throw;
             }
             finally
@@ -72,14 +68,22 @@ namespace Magistr.WorldMap
         {
             try
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Binder = new Binder();
+                var formatter = new BinaryFormatter {Binder = new Binder()};
+
                 var map = (MapArchive)formatter.Deserialize(fs);
                 foreach (var item in map.Objects)
                 {
                     if (!ThingTypeManager.HasThingType(item.ThingTypeId)) continue;
-                    if (ThingTypeManager.GetTningType(item.ThingTypeId).HasAttr(ThingAttr.Static))
-                        Add(new Thing(item.ThingTypeId, (UnityEngine.Vector3)item.Position, (UnityEngine.Quaternion)item.Rotation, (UnityEngine.Vector3)item.Scale));
+                    if (ThingTypeManager.GetThingType(item.ThingTypeId).HasAttr(ThingAttr.Static))
+                    {
+                        Add(new Thing
+                        {
+                            ThingTypeId = item.ThingTypeId,
+                            Position = (Vector3) item.Position,
+                            Rotation = (Quaternion) item.Rotation,
+                            Scale = (Vector3) item.Scale
+                        });
+                    }
                 }
             }
             catch (SerializationException e)
@@ -95,7 +99,7 @@ namespace Magistr.WorldMap
         }
 
         [Serializable]
-        struct MapArchive
+        private struct MapArchive
         {
             public DateTime Created;
             public string Name;
@@ -103,7 +107,7 @@ namespace Magistr.WorldMap
         }
 
         [Serializable]
-        struct MapObject
+        private struct MapObject
         {
             public int ThingTypeId;
             public Magistr.Math.Vector3 Position;
