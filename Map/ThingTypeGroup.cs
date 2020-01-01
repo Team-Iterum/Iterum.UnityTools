@@ -75,6 +75,9 @@ namespace Magistr.Things.Editor
         public bool NoCollision;
         public bool Invisible;
 
+        [Header("Special")] 
+        public float ModelScale;
+
         [Header("Data blocks")] 
         [SerializeField]
         public DataBlock[] Data;
@@ -116,6 +119,8 @@ namespace Magistr.Things.Editor
 
         private void OnEnable()
         {
+            if (ModelScale == 0)
+                ModelScale = 1;
             Data = new DataBlock[]
             {
                 new SpawnData(),
@@ -149,7 +154,7 @@ namespace Magistr.Things.Editor
                 {
                     var mesh = GetComponent<MeshFilter>().sharedMesh;
                     shapeModelData.Points = mesh.vertices.Select(e => new Vector3(e.x * transform.lossyScale.x,
-                        e.y * transform.lossyScale.y, e.z * transform.lossyScale.z)).ToArray();
+                        e.y * transform.lossyScale.y, e.z * transform.lossyScale.z) * ModelScale).ToArray();
                     shapeModelData.Triangles = mesh.triangles;
                 }
             }
