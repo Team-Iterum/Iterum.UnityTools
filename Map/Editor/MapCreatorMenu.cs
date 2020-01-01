@@ -42,13 +42,16 @@ namespace Magistr.WorldMap.Editor
         {
             var filename = EditorUtility.SaveFilePanel("Save map", ThingsDir, "Default", "map");
             if (string.IsNullOrEmpty(filename)) return;
-
+            
+            var mapName = Path.GetFileNameWithoutExtension(filename);
+            
             var map = new Map();
             map.LoadObjectsFromCurrentScene();
-            map.Save(File.OpenWrite(filename), Application.productName + "_Map");
+            
+            map.Save(File.OpenWrite(filename), mapName);
             
             AssetDatabase.Refresh();
-            Debug.Log("Map saved");
+            Debug.Log($"Map saved {mapName}");
         }
 
 

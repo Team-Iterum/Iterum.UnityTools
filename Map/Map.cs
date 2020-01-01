@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using MapData;
 
 namespace Magistr.WorldMap
 {
@@ -98,21 +99,28 @@ namespace Magistr.WorldMap
 
         }
 
-        [Serializable]
-        private struct MapArchive
-        {
-            public DateTime Created;
-            public string Name;
-            public MapObject[] Objects;
-        }
-
-        [Serializable]
-        private struct MapObject
-        {
-            public int ThingTypeId;
-            public Magistr.Math.Vector3 Position;
-            public Magistr.Math.Quaternion Rotation;
-            public Magistr.Math.Vector3 Scale;
-        }
+       
     }
+}
+
+namespace MapData
+{
+    
+    [Serializable]
+    public struct MapArchive
+    {
+        public DateTime Created;
+        public string Name;
+        public MapObject[] Objects;
+    }
+
+    [Serializable]
+    public struct MapObject
+    {
+        public int ThingTypeId;
+        public Magistr.Math.Vector3 Position;
+        public Magistr.Math.Quaternion Rotation;
+        public Magistr.Math.Vector3 Scale;
+    }
+
 }
