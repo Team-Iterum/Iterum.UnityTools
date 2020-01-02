@@ -1,7 +1,6 @@
-﻿using System.Linq;
+﻿#if UNITY_EDITOR
+using System.Linq;
 using Magistr.WorldMap.Editor;
-
-#if UNITY_EDITOR
 using EasyButtons;
 using System;
 using System.Collections.Generic;
