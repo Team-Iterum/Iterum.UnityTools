@@ -15,7 +15,7 @@ namespace Magistr.WorldMap.Editor
                 if(item.ThingTypeId > -1)
                 {
                     var tt = ThingTypeManager.GetThingType(item.ThingTypeId);
-                    if (tt.Category == ThingCategory.Station || tt.Category == ThingCategory.Spawn)
+                    if (tt.Category != ThingCategory.Ship)
                     {
                         var pos = item.transform.position;
                         item.MapPosition = pos;
