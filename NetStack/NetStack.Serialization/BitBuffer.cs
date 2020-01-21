@@ -40,6 +40,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -486,40 +487,43 @@ namespace NetStack.Serialization {
 			return value;
 		}
 
-		#if NETSTACK_INLINING
-			[MethodImpl(256)]
-		#endif
-		public BitBuffer AddString(string value) {
-			if (value == null)
-				throw new ArgumentNullException("value");
+#if NETSTACK_INLINING
+        [MethodImpl(256)]
+#endif
+        public BitBuffer AddString(string value) {
+            if (value == null)
+                throw new ArgumentNullException("value");
 
-			uint length = (uint)value.Length;
+            uint length = (uint)value.Length;
 
-			if (length > stringLengthMax)
-				length = (uint)stringLengthMax;
+            if (length > stringLengthMax)
+                length = (uint)stringLengthMax;
 
-			Add(stringLengthBits, length);
+			
+            var bytes = Encoding.UTF8.GetBytes(value);
+            Add(stringLengthBits, (uint) bytes.Length);
 
-			for (int i = 0; i < length; i++) {
-				Add(bitsASCII, ToASCII(value[i]));
-			}
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                AddByte(bytes[i]);
+            }
 
-			return this;
-		}
+            return this;
+        }
 
-		#if NETSTACK_INLINING
-			[MethodImpl(256)]
-		#endif
-		public string ReadString() {
-			StringBuilder builder = new StringBuilder();
-			uint length = Read(stringLengthBits);
+#if NETSTACK_INLINING
+        [MethodImpl(256)]
+#endif
+        public string ReadString() {
+            uint length = Read(stringLengthBits);
 
-			for (int i = 0; i < length; i++) {
-				builder.Append((char)Read(bitsASCII));
-			}
+            List<byte> bytes = new List<byte>();
+            for (int i = 0; i < length; i++) {
+                bytes.Add(ReadByte());
+            }
 
-			return builder.ToString();
-		}
+            return Encoding.UTF8.GetString(bytes.ToArray());
+        }
 
 		public override string ToString() {
 			StringBuilder builder = new StringBuilder();

@@ -82,6 +82,9 @@ namespace Magistr.Network
             }
         }
 
+#if WEBSOCKETS
+        public bool IsConnected => sockets.GetState() == WebSocketState.Open;
+#endif
         public void Stop()
         {
             if (!isReceiveRunning) return;
