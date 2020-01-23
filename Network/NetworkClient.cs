@@ -90,8 +90,6 @@ namespace Magistr.Network
             if (!isReceiveRunning) return;
 #if VALVE_SOCKETS
             sockets?.CloseConnection(connection);
-
-            //Library.Deinitialize();
 #endif
 #if WEBSOCKETS
             sockets?.Close();
@@ -109,8 +107,8 @@ namespace Magistr.Network
             sockets.OnOpen += () =>
             {
                 Connected?.Invoke();
-                Debug.Log("WS connected!");
-                Debug.Log("WS state: " + sockets.GetState());
+                Debug.Log("WebSocket connected");
+                Debug.Log("WebSocket State: " + sockets.GetState());
             };
 
             // Add OnMessage event listener
@@ -215,8 +213,11 @@ namespace Magistr.Network
             }
             return output.ToArray();
         }
-        public void Send(ISerializablePacket packet)
+        public bool Send(ISerializablePacket packet)
         {
+            
+            if (!IsConnected) return false;
+
 #if VALVE_SOCKETS
             var packetBuffer = packet.Serialize();
 
@@ -224,13 +225,13 @@ namespace Magistr.Network
             sockets.SendMessageToConnection(connection, buffer, SendType.Reliable);
 #endif
 #if WEBSOCKETS
-            var buffer = packet.Serialize();
+            
 
-            //Debug.Log("Sent " + buffer.Length + " first: " + buffer[0]);
+            var buffer = packet.Serialize();
             sockets.Send(buffer);
             StaticBuffers.Release(buffer);
-
 #endif
+            return true;
         }
 
         public void SendUnreliable(ISerializablePacket packet)
