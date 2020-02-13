@@ -41,6 +41,7 @@ namespace Magistr.Things.Editor
                     hashCode = (hashCode * 397) ^ obj.Kinematic.GetHashCode();
                     hashCode = (hashCode * 397) ^ obj.NoCollision.GetHashCode();
                     hashCode = (hashCode * 397) ^ obj.Invisible.GetHashCode();
+                    hashCode = (hashCode * 397) ^ obj.HasPivots.GetHashCode();
                     hashCode = (hashCode * 397) ^ (obj.Data != null ? obj.Data.GetHashCode() : 0);
                     return hashCode;
                 }
@@ -73,6 +74,8 @@ namespace Magistr.Things.Editor
         [Space]
         public bool NoCollision;
         public bool Invisible;
+        [Space]
+        public bool HasPivots;
 
         [Header("Special")] 
         public float ModelScale;
@@ -102,7 +105,7 @@ namespace Magistr.Things.Editor
             if(ShapeModel)             tt.Attributes |= ThingAttr.ShapeModel;
             if(ShapeBox)               tt.Attributes |= ThingAttr.ShapeBox;
             if(ShapeSphere)            tt.Attributes |= ThingAttr.ShapeSphere;
-            if(ShapeCapsule)            tt.Attributes |= ThingAttr.ShapeCapsule;
+            if(ShapeCapsule)           tt.Attributes |= ThingAttr.ShapeCapsule;
 
             if(Static)                 tt.Attributes |= ThingAttr.Static;
             if(Dynamic)                tt.Attributes |= ThingAttr.Dynamic;
@@ -118,21 +121,54 @@ namespace Magistr.Things.Editor
 
         private void OnEnable()
         {
-            if (ModelScale == 0)
-                ModelScale = 1;
             Data = new DataBlock[]
             {
-                new SpawnData(),
                 new ShapeBoxData(),
                 new ShapeSphereData(),
                 new ShapeModelData(),
-                new ShapeCapsuleData()
+                new ShapeCapsuleData(),
             };
+
+            if(Category == ThingCategory.Spawn)
+            {
+                var spawnData = new SpawnData() {
+                    Position = transform.position,
+                    RadiusX = 0,
+                    RadiusY = 0,
+                };
+                
+                if(GetComponent<MeshRenderer>())
+                {
+                    var bounds = GetComponent<MeshRenderer>().bounds;
+                    spawnData.RadiusX = spawnData.RadiusY = Mathf.Max(bounds.extents.x, bounds.extents.y, bounds.extents.z);
+                }
+                
+                Data = new DataBlock[] { spawnData };
+            }
+
+            if(HasPivots)
+            {
+                var pivotData = new PivotData();
+
+                var pivots = GetComponentsInChildren<Transform>(true)
+                 .Where(e => e.name.Contains("Pivot"))
+                 .Select(e=> 
+                    new Pivot() {
+                        LocalPosition = new Vector3(e.transform.localPosition.x, e.transform.localPosition.y, e.transform.localPosition.z),
+                        LocalRotation = new Quaternion(e.transform.localRotation.x, 
+                                    e.transform.localRotation.y, e.transform.localRotation.z, e.transform.localRotation.w), 
+                        Name = e.name
+                    }
+                ).ToArray();
+                pivotData.Pivots = pivots;
+                
+                var dataList = Data.ToList()
+                dataList.Add(pivotData);
+                Data = dataList.ToArray();
+            }
 
             if (GetComponent<MeshRenderer>())
             {
-               
-
                 var shapeBoxData = Data.FirstOrDefault(e => e is ShapeBoxData) as ShapeBoxData;
                 if (shapeBoxData != null && ShapeBox)
                 {
@@ -171,11 +207,12 @@ namespace Magistr.Things.Editor
                 }
             }
 
+            if (ModelScale == 0)
+                ModelScale = 1;
+
             if (string.IsNullOrEmpty(Title))
                 Title = gameObject.name;
                     
-
-
         }
 
 

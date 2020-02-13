@@ -28,6 +28,20 @@ namespace Magistr.Things
     {
 
     }
+    
+    [Serializable]
+    public class Pivot
+    {
+        public Magistr.Math.Vector3 LocalPosition;
+        public Magistr.Math.Quaternion LocalRotation;
+        public string Name;
+    }
+    
+    [Serializable]
+    public class PivotData : DataBlock
+    {
+        public Pivot[] Pivots;
+    }
 
     [Serializable]
     public class LightData : DataBlock
