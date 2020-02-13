@@ -162,7 +162,7 @@ namespace Magistr.Things.Editor
                 ).ToArray();
                 pivotData.Pivots = pivots;
                 
-                var dataList = Data.ToList()
+                var dataList = Data.ToList();
                 dataList.Add(pivotData);
                 Data = dataList.ToArray();
             }
