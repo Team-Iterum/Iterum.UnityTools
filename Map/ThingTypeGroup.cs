@@ -155,7 +155,7 @@ namespace Magistr.Things.Editor
                  .Select(e=> 
                     new Pivot() {
                         LocalPosition = new Vector3(e.transform.localPosition.x, e.transform.localPosition.y, e.transform.localPosition.z),
-                        LocalRotation = new Quaternion(e.transform.localRotation.x, 
+                        LocalRotation = new Magistr.Math.Quaternion(e.transform.localRotation.x, 
                                     e.transform.localRotation.y, e.transform.localRotation.z, e.transform.localRotation.w), 
                         Name = e.name
                     }
