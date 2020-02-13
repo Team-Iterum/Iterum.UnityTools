@@ -132,7 +132,7 @@ namespace Magistr.Things.Editor
             if(Category == ThingCategory.Spawn)
             {
                 var spawnData = new SpawnData() {
-                    Position = transform.position,
+                    Position = new Vector3(transform.position.x, transform.position.y, transform.position.z),
                     RadiusX = 0,
                     RadiusY = 0,
                 };
