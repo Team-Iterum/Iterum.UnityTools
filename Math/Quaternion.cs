@@ -12,6 +12,7 @@
 using System;
 using System.ComponentModel;
 using UnityEngine;
+using YamlDotNet.Serialization;
 
 namespace Magistr.Math
 {
@@ -25,6 +26,7 @@ namespace Magistr.Math
 
         public const float kEpsilon = 1E-06f; // should probably be used in the 0 tests in LookRotation or Slerp
 
+        [YamlIgnore]
         public Vector3 xyz
         {
             set
@@ -104,6 +106,7 @@ namespace Magistr.Math
         /// <summary>
         ///   <para>Returns the euler angle representation of the rotation.</para>
         /// </summary>
+        [YamlIgnore]
         public Vector3 eulerAngles
         {
             get => Quaternion.Internal_ToEulerRad(this);
@@ -120,6 +123,7 @@ namespace Magistr.Math
         /// Gets the length (magnitude) of the quaternion.
         /// </summary>
         /// <seealso cref="LengthSquared"/>
+        [YamlIgnore]
         public float Length => (float)System.Math.Sqrt(x * x + y * y + z * z + w * w);
 
         #endregion
@@ -129,6 +133,7 @@ namespace Magistr.Math
         /// <summary>
         /// Gets the square of the quaternion length (magnitude).
         /// </summary>
+        [YamlIgnore]
         public float LengthSquared => x * x + y * y + z * z + w * w;
 
         #endregion
@@ -855,14 +860,14 @@ namespace Magistr.Math
         }
 
 
-        public static explicit operator Quaternion(UnityEngine.Quaternion p)  // explicit byte to digit conversion operator
+        public static implicit  operator Quaternion(UnityEngine.Quaternion p)  // explicit byte to digit conversion operator
         {
             Quaternion vec = new Quaternion(p.x, p.y, p.z, p.w);
 
             return vec;
         }
 
-        public static explicit operator UnityEngine.Quaternion(Quaternion p)  // explicit byte to digit conversion operator
+        public static implicit operator UnityEngine.Quaternion(Quaternion p)  // explicit byte to digit conversion operator
         {
             UnityEngine.Quaternion vec = new UnityEngine.Quaternion(p.x, p.y, p.z, p.w);
             return vec;

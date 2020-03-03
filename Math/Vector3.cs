@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using UnityEngine;
+using YamlDotNet.Serialization;
 
 namespace Magistr.Math
 {
@@ -70,16 +71,19 @@ namespace Magistr.Math
         /// <summary>
         ///   <para>Returns this vector with a magnitude of 1 (Read Only).</para>
         /// </summary>
+        [YamlIgnore]
         public Vector3 normalized => Vector3.Normalize(this);
 
         /// <summary>
         ///   <para>Returns the length of this vector (Read Only).</para>
         /// </summary>
+        [YamlIgnore]
         public float magnitude => Mathf.Sqrt(x * x + y * y + z * z);
 
         /// <summary>
         ///   <para>Returns the squared length of this vector (Read Only).</para>
         /// </summary>
+        [YamlIgnore]
         public float sqrMagnitude => x * x + y * y + z * z;
 
         /// <summary>
@@ -526,17 +530,29 @@ namespace Magistr.Math
             return Mathf.Acos(Mathf.Clamp(Vector3.Dot(from.normalized, to.normalized), -1f, 1f));
         }
 
-        public static explicit operator Vector3(UnityEngine.Vector3 p)  // explicit byte to digit conversion operator
+        public static implicit  operator Vector3(UnityEngine.Vector3 p)  // explicit byte to digit conversion operator
         {
             Vector3 vec = new Vector3(p.x, p.y, p.z);
 
             return vec;
         }
 
-        public static explicit operator UnityEngine.Vector3(Vector3 p)  // explicit byte to digit conversion operator
+        public static implicit operator UnityEngine.Vector3(Vector3 p)  // explicit byte to digit conversion operator
         {
             UnityEngine.Vector3 vec = new UnityEngine.Vector3(p.x, p.y, p.z);
             return vec;
+        }
+        
+        public static implicit operator float[](Vector3 p)  // explicit byte to digit conversion operator
+        {
+            
+            return new []{p.x, p.y, p.z};
+        }
+        
+        public static implicit operator Vector3(float[] p)  // explicit byte to digit conversion operator
+        {
+            
+            return new Vector3(p[0], p[1], p[2]);
         }
     }
 }
