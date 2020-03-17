@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Magistr.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -17,6 +18,30 @@ namespace Magistr.New.ThingTypes
             DataBlockFactory.Add("ShapeCapsule", ShapeCapsule);
             DataBlockFactory.Add("HasPivots", PivotData);
             DataBlockFactory.Add("IsSpawn", SpawnData);
+
+            RegisterDynamicDataBlocks();
+        }
+
+        private static void RegisterDynamicDataBlocks()
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    var attr = type.GetCustomAttribute(typeof(AutoRegisterDataBlock), true);
+                    if (attr != null && type.GetInterfaces().Contains(typeof(IDataBlock)))
+                    {
+                        var regAttr = (attr as AutoRegisterDataBlock);
+                        
+                        DataBlockFactory.Add(regAttr?.FlagKeyword, o =>
+                        {
+                            var method = type.GetMethod(regAttr.FactoryMethod);
+                            var instance = method.Invoke(null, new object[] {o});
+                            return (IDataBlock) instance;
+                        });
+                    }
+                }
+            }
         }
 
         private static IDataBlock SpawnData(GameObject go)
@@ -82,7 +107,7 @@ namespace Magistr.New.ThingTypes
 
             ShapeMeshData data = new ShapeMeshData
             {
-                Name = $"{tt.Name}_MeshData"
+                Name = $"{tt.Name}_Mesh"
             };
 
 
@@ -96,7 +121,10 @@ namespace Magistr.New.ThingTypes
             string vertices = string.Join("\n", points.Select(e => $"v {e.x}/{e.y}/{e.z}"));
             string indices  = string.Join("\n", mesh.triangles.Select(e => $"i {e}"));
 
-            File.WriteAllText(Path.Combine(settings.GetPath(tt, $"{data.Name}.txt")), $"// Mesh data '{tt.Category}/{tt.Name}'\n{vertices}\n{indices}");
+            string dirPath = Path.Combine(settings.SavePath, "Mesh");
+            Directory.CreateDirectory(dirPath);
+            
+            File.WriteAllText(Path.Combine(dirPath, $"{data.Name}.txt"), $"// Mesh data '{tt.Category}/{tt.Name}'\n{vertices}\n{indices}");
             return data;
         }
 

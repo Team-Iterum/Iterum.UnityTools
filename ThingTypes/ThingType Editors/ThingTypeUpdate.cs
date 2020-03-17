@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using EasyButtons;
 using UnityEngine;
@@ -55,6 +56,7 @@ namespace Magistr.New.ThingTypes
             Debug.Log($"Updated (Name, Category) ThingType {tt.Category}/{tt.Name}");
             
         }
+      
         
         [Button("Update Data Blocks", ButtonMode.DisabledInPlayMode)]
         public void UpdateDataBlocks()

@@ -12,7 +12,7 @@ namespace Magistr.New.ThingTypes
     {
 
         
-        public string SavePath = "Assets/StreamingAssets/Maps";
+        public string SavePath = "Things/Maps";
 
         public string MapName;
 
@@ -72,7 +72,7 @@ namespace Magistr.New.ThingTypes
 
         private string GetPath(string mName)
         {
-            return Path.Combine(SavePath, $"{mName}.yaml");
+            return Path.Combine(SavePath, $"{mName}.yml");
         }
         
 

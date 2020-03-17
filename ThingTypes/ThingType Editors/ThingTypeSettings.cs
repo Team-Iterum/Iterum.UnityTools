@@ -10,7 +10,7 @@ namespace Magistr.New.ThingTypes
     {
         private const string DefaultCategoryName = "Default";
         
-        public string SavePath = "Assets/StreamingAssets/ThingTypes";
+        public string SavePath = "Things/ThingTypes";
         public int ID = 1;
 
         
@@ -41,7 +41,7 @@ namespace Magistr.New.ThingTypes
 
         public string GetPath(ThingType tt)
         {
-            return Path.Combine(SavePath, $"{tt.Name}.yaml");
+            return Path.Combine(SavePath, $"{tt.Name}.yml");
         }
         
         public string GetPath(ThingType tt, string ttName)
