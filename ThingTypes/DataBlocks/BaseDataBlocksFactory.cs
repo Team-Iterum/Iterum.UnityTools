@@ -98,8 +98,11 @@ namespace Magistr.New.ThingTypes
 
         private static IDataBlock ShapeMesh(GameObject go)
         {
-            if (!go.GetComponent<MeshFilter>()) 
+            var meshFilter = go.GetComponent<MeshFilter>();
+            if (meshFilter == null)
+            {
                 throw new Exception("Factory ShapeMeshData: MeshFilter not found");
+            }
 
 
             var settings = Object.FindObjectOfType<ThingTypeSettings>();
@@ -111,7 +114,7 @@ namespace Magistr.New.ThingTypes
             };
 
 
-            var mesh = go.GetComponent<MeshFilter>().sharedMesh;
+            var mesh = meshFilter.sharedMesh;
 
             var points = mesh.vertices.Select(e =>
                 new Math.Vector3(e.x * go.transform.lossyScale.x,

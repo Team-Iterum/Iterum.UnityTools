@@ -1,4 +1,8 @@
 using EasyButtons;
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.SceneManagement;
+#endif
 using UnityEngine;
 
 namespace Magistr.New.ThingTypes
@@ -34,7 +38,12 @@ namespace Magistr.New.ThingTypes
             };
 
             settings.ID += 1;
-            
+
+            if (PrefabUtility.IsAnyPrefabInstanceRoot(settings.gameObject))
+            {
+                PrefabUtility.ApplyPrefabInstance(settings.gameObject, InteractionMode.AutomatedAction);
+            }
+
             ThingTypeSerializer.Serialize(settings.GetPath(tt), tt);
 
             DestroyImmediate(GetComponent<ThingTypeRef>());

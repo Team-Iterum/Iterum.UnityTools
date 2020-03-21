@@ -10,9 +10,12 @@ namespace Magistr.New.ThingTypes
     [ExecuteInEditMode]
     public class MapDataSettings : MonoBehaviour
     {
-
+        public Dictionary<string, string> MapDataAttrs; 
         
         public string SavePath = "Things/Maps";
+
+        [Multiline]
+        public string ExcludeCategory = string.Empty;
 
         public string MapName;
 
@@ -43,19 +46,28 @@ namespace Magistr.New.ThingTypes
                     // Test attrs
                     Attrs = new Dictionary<string, string>()
                     {
-                        {"AmbientLight", ColorUtility.ToHtmlStringRGBA(UnityEngine.RenderSettings.ambientLight)}
                     }
-                };    
+                };
             }
             else
             {
                 md = MapDataSerializer.Deserialize(GetPath(MapName));
             }
             
-
+            var settings = FindObjectOfType<ThingTypeSettings>();
             var refs = FindObjectsOfType<ThingTypeRef>();
-
-            md.Refs = refs.Select(ttRef => new MapRef()
+            
+            var exclude = ExcludeCategory
+                            .Replace("\r", "")
+                            .Replace("\n", "")
+                            .Split(' ');;
+            
+            
+            
+            md.Refs = refs
+                // exclude categories
+                .Where(ttr => !exclude.Contains(ThingTypeSerializer.Find(settings.SavePath, ttr.ID).Category))
+                .Select(ttRef => new MapRef()
             {
                 ID = ttRef.ID,
                 
@@ -63,6 +75,17 @@ namespace Magistr.New.ThingTypes
                 rotation = (Math.Vector3)ttRef.transform.eulerAngles,
 
             }).ToArray();
+            
+            if (MapDataAttrs != null)
+            {
+                foreach (var attr in MapDataAttrs)
+                {
+                    if (!md.Attrs.ContainsKey(attr.Key))
+                        md.Attrs.Add(attr.Key, attr.Value);
+                    
+                    md.Attrs[attr.Key] = attr.Value;
+                }
+            }
             
             MapDataSerializer.Serialize(GetPath(md.Name), md);
             
