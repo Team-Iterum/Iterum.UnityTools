@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace Magistr.New.ThingTypes
@@ -9,7 +10,34 @@ namespace Magistr.New.ThingTypes
     {
         private static readonly Dictionary<string, Func<GameObject, IDataBlock>> factory = new Dictionary<string, Func<GameObject, IDataBlock>>();
         
-        public static  void Add(string attrName, Func<GameObject, IDataBlock> func)
+        public static void Register()
+        {
+            RegisterDynamicDataBlocks();
+        }
+
+        private static void RegisterDynamicDataBlocks()
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    var attr = type.GetCustomAttribute(typeof(AutoRegisterDataBlock), true);
+                    if (attr == null || !type.GetInterfaces().Contains(typeof(IDataBlock))) continue;
+                    
+                    if (attr is AutoRegisterDataBlock regAttr)
+                    {
+                        Add(regAttr.FlagKeyword, o =>
+                        {
+                            var method = type.GetMethod(regAttr.FactoryMethod);
+                            var instance = method?.Invoke(null, new object[] {o});
+                            return instance as IDataBlock;
+                        });
+                    }
+                }
+            }
+        }
+
+        private static void Add(string attrName, Func<GameObject, IDataBlock> func)
         {
             if (factory.ContainsKey(attrName)) return;
 

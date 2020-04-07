@@ -16,7 +16,7 @@ namespace Magistr.New.ThingTypes
         
         private void OnEnable()
         {
-            BaseDataBlocksFactory.Register();
+            DataBlockFactory.Register();
         }
 
         public static NameCategory ParseName(string ttName)

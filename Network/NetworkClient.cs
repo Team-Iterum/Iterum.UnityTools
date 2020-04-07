@@ -35,8 +35,7 @@ namespace Magistr.Network
             sockets.OnOpen += () =>
             {
                 Connected?.Invoke();
-                Debug.Log("WebSocket connected");
-                Debug.Log("WebSocket State: " + sockets.GetState());
+                Debug.Log($"WebSocket {sockets.GetState()}");
             };
 
             // Add OnMessage event listener
@@ -52,7 +51,11 @@ namespace Magistr.Network
             // Add OnError event listener
             sockets.OnError += errMsg =>
             {
-                Debug.LogError("WS error: " + errMsg);
+                Disconnected?.Invoke();
+
+                Stop();
+                
+                Debug.LogError($"WebSocket error: {errMsg}");
             };
 
             // Add OnClose event listener
@@ -60,14 +63,15 @@ namespace Magistr.Network
             {
                 Disconnected?.Invoke();
 
-                if(code == WebSocketCloseCode.Normal)
-                    Debug.Log("WS closed with code: " + code);
-                else
-                    Debug.LogError("WS closed with code: " + code);
+                Stop();
+                
+                Debug.Log($"WebSocket closed with code: {code}");
             };
 
             // Connect to the server
             sockets.Connect();
+
+            isRunning = true;
 
         }
         public void Send(ISerializablePacket packet)
