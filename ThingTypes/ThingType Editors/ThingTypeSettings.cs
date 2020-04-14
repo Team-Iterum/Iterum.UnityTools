@@ -41,7 +41,7 @@ namespace Magistr.New.ThingTypes
 
         public string GetPath(ThingType tt)
         {
-            return Path.Combine(SavePath, $"{tt.Name}.yml");
+            return Path.Combine(SavePath, $"{tt.Name} [{tt.ID}].yml");
         }
         
         public string GetPath(ThingType tt, string ttName)
