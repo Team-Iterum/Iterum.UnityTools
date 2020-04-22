@@ -7,7 +7,7 @@ using Iterum.Buffers;
 namespace Iterum.Network
 {
     public delegate void ReceiveNetworkMessage(ref NetworkMessage msg);
-    public class NetworkClient
+    public class WebSocketNetworkClient
     {
         private WebSocket sockets;
         private bool isRunning;

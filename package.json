@@ -1,7 +1,7 @@
 {
-  "name": "com.magistr.iterumtools",
+  "name": "com.iterum.unitytools",
   "displayName": "Iterum.UnityTools",
-  "version": "2.1.0",
+  "version": "2.3.0",
   "unity": "2019.3",
   "description": "Client tools for Iterum Framework",
   "keywords": [

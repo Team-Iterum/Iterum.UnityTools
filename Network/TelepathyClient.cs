@@ -19,6 +19,9 @@ namespace Iterum.Network
 
         public TelepathyClient()
         {
+            // create and connect the client
+            client = new Client();
+            
             // use Debug.Log functions for Telepathy so we can see it in the console
             Logger.Log = Debug.Log;
             Logger.LogWarning = Debug.LogWarning;
@@ -63,13 +66,11 @@ namespace Iterum.Network
         {
             var buffer = packet.Serialize();
             client.Send(buffer);
-            StaticBuffers.Release(buffer);
+            //StaticBuffers.Release(buffer);
         }
 
         public void Start(string host, int port)
         {
-            // create and connect the client
-            client = new Client();
             client.Connect(host, port);
         }
     }
