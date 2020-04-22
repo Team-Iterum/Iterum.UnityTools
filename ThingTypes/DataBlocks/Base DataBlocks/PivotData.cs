@@ -1,8 +1,9 @@
 using System.Linq;
+using Iterum.ThingTypes;
 using Magistr.New.ThingTypes;
 using UnityEngine;
 
-namespace Magistr.DataBlocks
+namespace Iterum.DataBlocks
 {
     /// <summary>
     /// Base Data block

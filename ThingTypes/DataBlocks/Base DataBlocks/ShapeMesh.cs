@@ -2,11 +2,12 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Iterum.ThingTypes;
 using Magistr.New.ThingTypes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Magistr.DataBlocks
+namespace Iterum.DataBlocks
 {
     /// <summary>
     /// Base Data block

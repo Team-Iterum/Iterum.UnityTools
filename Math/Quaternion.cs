@@ -14,7 +14,7 @@ using System.ComponentModel;
 using UnityEngine;
 using YamlDotNet.Serialization;
 
-namespace Magistr.Math
+namespace Iterum.Math
 {
 
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace Magistr.New.ThingTypes
+namespace Iterum.ThingTypes
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class AutoRegisterDataBlock : Attribute

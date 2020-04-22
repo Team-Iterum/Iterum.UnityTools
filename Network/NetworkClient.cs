@@ -2,9 +2,9 @@
 using System.Threading;
 using UnityEngine;
 using HybridWebSocket;
-using Magistr.Buffers;
+using Iterum.Buffers;
 
-namespace Magistr.Network
+namespace Iterum.Network
 {
     public delegate void ReceiveNetworkMessage(ref NetworkMessage msg);
     public class NetworkClient

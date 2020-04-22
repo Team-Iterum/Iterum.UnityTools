@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EasyButtons;
+using Magistr.New.ThingTypes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Magistr.New.ThingTypes
+namespace Iterum.ThingTypes
 {
     [ExecuteInEditMode]
     public class MapDataSettings : MonoBehaviour

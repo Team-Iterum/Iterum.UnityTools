@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Iterum.ThingTypes;
 using Magistr.New.ThingTypes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Magistr.DataBlocks
+namespace Iterum.DataBlocks
 {
     /// <summary>
     /// Write inner ThingTypeRef as hierarchy maprefs

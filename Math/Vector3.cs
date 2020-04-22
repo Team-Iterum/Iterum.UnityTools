@@ -3,7 +3,7 @@ using System.ComponentModel;
 using UnityEngine;
 using YamlDotNet.Serialization;
 
-namespace Magistr.Math
+namespace Iterum.Math
 {
     /// <summary>
     ///   <para>Representation of 3D vectors and points.</para>

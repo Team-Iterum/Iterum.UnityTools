@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Magistr.New.ThingTypes;
 using UnityEngine;
 
-namespace Magistr.New.ThingTypes
+namespace Iterum.ThingTypes
 {
     public static class DataBlockFactory
     {

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Magistr.New.ThingTypes
+namespace Iterum.ThingTypes
 {
     public class ThingTypeRef : MonoBehaviour, IPrefabRef
     {

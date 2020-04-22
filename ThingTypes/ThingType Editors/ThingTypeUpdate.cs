@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
 using EasyButtons;
+using Magistr.New.ThingTypes;
 using UnityEngine;
 
-namespace Magistr.New.ThingTypes
+namespace Iterum.ThingTypes
 {
     public class ThingTypeUpdate : MonoBehaviour
     {

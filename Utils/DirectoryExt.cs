@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace Magistr.Utils
+namespace Iterum.Utils
 {
     internal static class DirectoryExt
     {

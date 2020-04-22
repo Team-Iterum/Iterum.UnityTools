@@ -1,11 +1,12 @@
 using EasyButtons;
+using Magistr.New.ThingTypes;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 using UnityEngine;
 
-namespace Magistr.New.ThingTypes
+namespace Iterum.ThingTypes
 {
     public class ThingTypeCreate : MonoBehaviour
     {

@@ -1,9 +1,10 @@
 using System;
 using System.IO;
-using Magistr.Utils;
+using Iterum.Utils;
+using Magistr.New.ThingTypes;
 using UnityEngine;
 
-namespace Magistr.New.ThingTypes
+namespace Iterum.ThingTypes
 {
     [ExecuteInEditMode]
     public class ThingTypeSettings : MonoBehaviour

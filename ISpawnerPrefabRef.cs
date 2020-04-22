@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Magistr.New.ThingTypes
+namespace Iterum.ThingTypes
 {
     public interface IPrefabRef
     {
