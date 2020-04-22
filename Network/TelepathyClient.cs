@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics;
 using Iterum.Buffers;
+using Iterum.Utils;
 using Telepathy;
-using UnityEngine;
+using Debug = UnityEngine.Debug;
 using EventType = Telepathy.EventType;
 using Logger = Telepathy.Logger;
 
@@ -16,9 +18,18 @@ namespace Iterum.Network
         public event Action Disconnected;
         public bool IsConnected => client.Connected;
 
+        private Stopwatch pingSw;
+        private StopwatchTimer pingTimer;
+        
+        public double RTT { get; private set; }
 
         public TelepathyClient()
         {
+            pingSw = new Stopwatch();
+            pingSw.Start();
+            
+            pingTimer = new StopwatchTimer(1f);
+            
             // create and connect the client
             client = new Client();
             
@@ -34,19 +45,37 @@ namespace Iterum.Network
             client.Disconnect();
         }
 
+        private void SendPing()
+        {
+            if (pingTimer.Check())
+            {
+                Send(new byte[] {0,255});
+                pingSw.Restart();
+
+            }
+        }
+
         public void Update()
         {
+            SendPing();
+            
             // grab all new messages. do this in your Update loop.
             while (client.GetNextMessage(out Message msg))
             {
                 switch (msg.eventType)
                 {
                     case EventType.Connected:
-                        Debug.Log($"Telepathy connected");
+                        Debug.Log($"Client connected - {Address}");
                         
                         Connected?.Invoke();
                         break;
                     case EventType.Data:
+                        // ping answer
+                        if (msg.data[0] == 0 && msg.data[1] == 254)
+                        {
+                            RTT = TimeConvert.TicksToMs(pingSw.ElapsedTicks);
+                        }
+                        
                         var networkMessage = new NetworkMessage
                         {
                             Data = msg.data,
@@ -54,7 +83,7 @@ namespace Iterum.Network
                         Received?.Invoke(ref networkMessage);
                         break;
                     case EventType.Disconnected:
-                        Debug.Log($"Telepathy disconnected");
+                        Debug.Log($"Client disconnected");
                         
                         Disconnected?.Invoke();
                         break;
@@ -62,16 +91,18 @@ namespace Iterum.Network
             }
         }
 
-        public void Send(ISerializablePacket packet)
+        public void Send(byte[] bytes)
         {
-            var buffer = packet.Serialize();
-            client.Send(buffer);
-            //StaticBuffers.Release(buffer);
+            client.Send(bytes);
         }
 
         public void Start(string host, int port)
         {
+            Address = $"{host}:{port}";
+            Debug.Log($"Client connecting... - {Address}");
             client.Connect(host, port);
         }
+
+        private string Address { get; set; }
     }
 }
