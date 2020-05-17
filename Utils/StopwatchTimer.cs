@@ -48,5 +48,11 @@ namespace Iterum.Utils
             watch.Start();
             Reset();
         }
+
+        public void Stop()
+        {
+            watch.Stop();
+            watch.Reset();
+        }
     }
 }
