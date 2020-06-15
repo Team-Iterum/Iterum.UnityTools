@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Iterum.ThingTypes;
 using Magistr.New.ThingTypes;
 using UnityEngine;
@@ -16,6 +17,8 @@ namespace Iterum.DataBlocks
         public class HierarchyNode
         {
             public string id;
+            [DefaultValue("")]
+            public string tag;
             
             public float[] pos;
             public float[] rot;
@@ -76,7 +79,6 @@ namespace Iterum.DataBlocks
                 var node = new HierarchyNode()
                 {
                     id = childTransform.name,
-                    
                     pos = (Math.Vector3) childTransform.localPosition,
                     rot = (Math.Vector3) childTransform.localRotation.eulerAngles,
                     
