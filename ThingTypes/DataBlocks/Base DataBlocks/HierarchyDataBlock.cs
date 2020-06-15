@@ -17,7 +17,6 @@ namespace Iterum.DataBlocks
         public class HierarchyNode
         {
             public string id;
-            [DefaultValue("")]
             public string tag;
             
             public float[] pos;
