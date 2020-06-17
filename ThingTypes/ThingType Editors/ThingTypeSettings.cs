@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using Iterum.Utils;
-using Magistr.New.ThingTypes;
 using UnityEngine;
 
 namespace Iterum.ThingTypes

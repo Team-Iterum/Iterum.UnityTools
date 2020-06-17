@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Magistr.New.ThingTypes;
+using Iterum.DataBlocks;
 using UnityEngine;
 
 namespace Iterum.ThingTypes

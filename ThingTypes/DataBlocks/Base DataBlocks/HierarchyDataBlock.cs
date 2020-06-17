@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Iterum.ThingTypes;
-using Magistr.New.ThingTypes;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

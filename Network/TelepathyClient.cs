@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using Iterum.Buffers;
 using Iterum.Utils;
 using Telepathy;
 using Debug = UnityEngine.Debug;
@@ -105,4 +104,6 @@ namespace Iterum.Network
 
         private string Address { get; set; }
     }
+
+    public delegate void ReceiveNetworkMessage(ref NetworkMessage msg);
 }

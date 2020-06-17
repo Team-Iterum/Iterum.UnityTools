@@ -1,6 +1,5 @@
 using System.Linq;
 using Iterum.ThingTypes;
-using Magistr.New.ThingTypes;
 using UnityEngine;
 
 namespace Iterum.DataBlocks

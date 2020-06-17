@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Iterum.Network
+﻿namespace Iterum.Network
 {
     public struct NetworkMessage
     {
