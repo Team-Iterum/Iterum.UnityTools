@@ -13,6 +13,8 @@ namespace Iterum.ThingTypes
 
         string[] Flags { get; set; }
         Dictionary<string, string> Attrs { get; set; }
+        
+        public IDataBlock[] DataBlocks { get; set; }
 
     }
     
@@ -26,7 +28,7 @@ namespace Iterum.ThingTypes
         public string[] Flags { get; set; }
         public Dictionary<string, string> Attrs { get; set; }
 
-        public IDataBlock[] DataBlocks;
+        public IDataBlock[] DataBlocks { get; set; }
         
         public override string ToString()
         {
