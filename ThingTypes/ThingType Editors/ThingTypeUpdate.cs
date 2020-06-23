@@ -61,7 +61,7 @@ namespace Iterum.ThingTypes
         {
             if (!Check(this, out ThingTypeSettings settings, out ThingType tt)) return;
             
-            var list = DataBlockFactory.GetDataBlocks(gameObject, tt.Flags);
+            var list = DataBlockFactory.GetDataBlocks(gameObject, tt.Flags, null);
             tt.DataBlocks = list.ToArray();
 
             ThingTypeSerializer.Serialize(settings.GetPath(tt), tt);
@@ -69,6 +69,7 @@ namespace Iterum.ThingTypes
             Debug.Log($"Updated (DataBlocks) ThingType {tt.Category}/{tt.Name}");
             
         }
+        
 
 #endif
     }

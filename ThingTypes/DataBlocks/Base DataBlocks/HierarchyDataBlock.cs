@@ -35,7 +35,7 @@ namespace Iterum.DataBlocks
                 nodes = new List<HierarchyNode>(),
                 id = root.GetComponent<ThingTypeRef>().ID.ToString(),
                 pos = Math.Vector3.zero,
-                rot = Math.Vector3.zero
+                rot = Math.Vector3.zero,
             };
             
             // Find thingtyprefs

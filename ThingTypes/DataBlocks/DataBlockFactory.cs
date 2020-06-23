@@ -45,13 +45,14 @@ namespace Iterum.ThingTypes
             factory.Add(attrName, func);
         }
 
-        public static List<IDataBlock> GetDataBlocks(GameObject go, IEnumerable<string> ttAttrs)
+        public static List<IDataBlock> GetDataBlocks(GameObject go, IEnumerable<string> ttAttrs, string[] exclude)
         {
             var dataBlocks = new List<IDataBlock>();
             if (ttAttrs == null) return new List<IDataBlock>();
             foreach (string attr in ttAttrs)
             {
                 if (!factory.ContainsKey(attr)) continue;
+                if (exclude != null && exclude.Contains(attr)) continue;
                 
                 try
                 {
