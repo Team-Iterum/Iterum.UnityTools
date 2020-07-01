@@ -54,7 +54,7 @@ namespace Iterum.ThingTypes
                 md = MapDataSerializer.Deserialize(GetPath(MapName));
             }
             
-            var settings = FindObjectOfType<ThingTypeSettings>();
+            var settings = ThingTypeSettings.instance;
             var refs = FindObjectsOfType<ThingTypeRef>();
             
             var exclude = ExcludeCategory

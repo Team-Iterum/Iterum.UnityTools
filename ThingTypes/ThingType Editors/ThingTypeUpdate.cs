@@ -1,4 +1,6 @@
 using EasyButtons;
+using Iterum.DataBlocks;
+using Iterum.Game;
 using UnityEngine;
 
 namespace Iterum.ThingTypes
@@ -14,7 +16,7 @@ namespace Iterum.ThingTypes
 
         private static bool Check(Component self, out ThingTypeSettings settings, out ThingType tt)
         {
-            settings = FindObjectOfType<ThingTypeSettings>();
+            settings = ThingTypeSettings.instance;
             var thingTypeRef = self.gameObject.GetComponent<ThingTypeRef>();
 
             tt = default;
@@ -61,6 +63,11 @@ namespace Iterum.ThingTypes
         {
             if (!Check(this, out ThingTypeSettings settings, out ThingType tt)) return;
             
+            DataBlockFactory.Register();
+            
+            ShapeMeshData.Skip = false;
+            ShapeMeshDataArray.Skip = false;
+            
             var list = DataBlockFactory.GetDataBlocks(gameObject, tt.Flags, null);
             tt.DataBlocks = list.ToArray();
 
@@ -70,6 +77,27 @@ namespace Iterum.ThingTypes
             
         }
         
+        [Button("Update DataBlocks (no mesh)", ButtonMode.DisabledInPlayMode)]
+        public void UpdateDataBlocksNoMesh()
+        {
+            if (!Check(this, out ThingTypeSettings settings, out ThingType tt)) return;
+
+            DataBlockFactory.Register();
+            
+            ShapeMeshData.Skip = true;
+            ShapeMeshDataArray.Skip = true;
+            
+            var list = DataBlockFactory.GetDataBlocks(gameObject, tt.Flags, null);
+            tt.DataBlocks = list.ToArray();
+
+            ThingTypeSerializer.Serialize(settings.GetPath(tt), tt);
+            
+            ShapeMeshData.Skip = false;
+            ShapeMeshDataArray.Skip = false;
+            Debug.Log($"Updated (DataBlocks) (no mesh) ThingType {tt.Category}/{tt.Name}");
+            
+        }
+
 
 #endif
     }

@@ -47,10 +47,17 @@ namespace Iterum.ThingTypes
         {
             var things = new Dictionary<int, ThingType>();
 
+            var builder = new DeserializerBuilder();
+
+            foreach (var dataBlock in GetDataBlocksTypes()) 
+                builder.WithTagMapping($"!{dataBlock.Name}", dataBlock);
+            
+            var deserializer =  builder.Build();
+            
             var files = Directory.EnumerateFiles(directory, "*.yml", SearchOption.AllDirectories);
             foreach (string fileName in files)
             {
-                var tt = Deserialize(fileName);
+                var tt = Deserialize(deserializer, fileName);
                 if(tt.Name == null) continue;
                 
                 things.Add(tt.ID, tt);
@@ -59,18 +66,10 @@ namespace Iterum.ThingTypes
             return things;
         }
 
-        public static ThingType Deserialize(string fileName)
+        public static ThingType Deserialize(IDeserializer deserializer, string fileName)
         {
             if (!File.Exists(fileName)) return default;
-
-            var builder = new DeserializerBuilder();
-
-            foreach (var dataBlock in GetDataBlocksTypes()) 
-                builder.WithTagMapping($"!{dataBlock.Name}", dataBlock);
-            
-            var serializer =  builder.Build();
-            
-            return serializer.Deserialize<ThingType>(File.ReadAllText(fileName));
+            return deserializer.Deserialize<ThingType>(File.ReadAllText(fileName));
         }
         
         public static void Serialize(string fileName, ThingType tt, bool overwrite = true, bool outputFlags = true)

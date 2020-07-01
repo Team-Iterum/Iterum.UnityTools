@@ -14,6 +14,8 @@ namespace Iterum.DataBlocks
     [AutoRegisterDataBlock("ShapeMesh", nameof(Create))]
     public class ShapeMeshData : IDataBlock
     {
+        public static bool Skip = false;
+        
         public string Name;
 
 
@@ -26,7 +28,7 @@ namespace Iterum.DataBlocks
             if (meshFilter.sharedMesh.vertices.Length == 0) 
                 throw new Exception("Mesh empty");
 
-            var settings = Object.FindObjectOfType<ThingTypeSettings>();
+            var settings = ThingTypeSettings.instance;
             var tt = ThingTypeSerializer.Find(settings.SavePath, go.GetComponent<ThingTypeRef>().ID);
 
             ShapeMeshData data = new ShapeMeshData
@@ -34,13 +36,19 @@ namespace Iterum.DataBlocks
                 Name = $"{tt.Name}_Mesh"
             };
 
-            string content = GetMeshContent(meshFilter.sharedMesh, tt, go.transform.lossyScale);
-            
-            string dirPath = Path.Combine(settings.SavePath, "Mesh");
-            Directory.CreateDirectory(dirPath);
-            
-            File.WriteAllText(Path.Combine(dirPath, $"{data.Name}.txt"), $"{GetHeader(tt)}\n{content}");
-            
+            if (!Skip)
+            {
+                Debug.Log($"Run GetMeshContent");
+                
+                string content = GetMeshContent(meshFilter.sharedMesh, tt, go.transform.lossyScale);
+
+                string dirPath = Path.Combine(settings.SavePath, "Mesh");
+                Directory.CreateDirectory(dirPath);
+
+                File.WriteAllText(Path.Combine(dirPath, $"{data.Name}.txt"), $"{GetHeader(tt)}\n{content}");
+
+            }
+
             return data;
         }
 

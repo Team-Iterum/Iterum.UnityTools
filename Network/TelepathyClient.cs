@@ -31,7 +31,7 @@ namespace Iterum.Network
             
             // create and connect the client
             client = new Client();
-            
+
             // use Debug.Log functions for Telepathy so we can see it in the console
             Logger.Log = Debug.Log;
             Logger.LogWarning = Debug.LogWarning;

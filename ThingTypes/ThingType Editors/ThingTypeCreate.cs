@@ -17,16 +17,9 @@ namespace Iterum.ThingTypes
         [Button("Create", ButtonMode.DisabledInPlayMode)]
         public void Create()
         {
-            var settings = FindObjectOfType<ThingTypeSettings>();
-            if (settings == null)
-            {
-                Debug.LogError("ThingTypeSettings not found");
-                return;
-            }
+            var settings = ThingTypeSettings.instance;
 
             var nameCategory = ThingTypeSettings.ParseName(name);
-
-            
             
             var tt = new ThingType
             {
@@ -37,11 +30,6 @@ namespace Iterum.ThingTypes
             };
 
             settings.ID += 1;
-
-            if (PrefabUtility.IsAnyPrefabInstanceRoot(settings.gameObject))
-            {
-                PrefabUtility.ApplyPrefabInstance(settings.gameObject, InteractionMode.AutomatedAction);
-            }
 
             ThingTypeSerializer.Serialize(settings.GetPath(tt), tt);
 

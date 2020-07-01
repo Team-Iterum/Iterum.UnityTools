@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Iterum.DataBlocks;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Iterum.ThingTypes
 {
@@ -54,9 +56,17 @@ namespace Iterum.ThingTypes
                 if (!factory.ContainsKey(attr)) continue;
                 if (exclude != null && exclude.Contains(attr)) continue;
                 
+                Stopwatch sw = new Stopwatch();
                 try
                 {
+                    Debug.Log($"Run: {attr}...");
+                    
+                    sw.Start();
                     var block = factory[attr].Invoke(go);
+                    sw.Stop();
+                    
+                    Debug.Log($"End: {attr} Time: {sw.Elapsed.TotalSeconds}s");
+                    
                     dataBlocks.Add(block);
                 }
                 catch(Exception ex)

@@ -1,23 +1,31 @@
 using System;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 namespace Iterum.ThingTypes
 {
-    [ExecuteInEditMode]
-    public class ThingTypeSettings : MonoBehaviour
+    
+    public class ThingTypeSettings : ScriptableObject
     {
         private const string DefaultCategoryName = "Default";
         
-        public string SavePath = "Things/ThingTypes";
+        public string SavePath = "../ThingTypes";
         public int ID = 1;
 
-        
-        private void OnEnable()
-        {
-            DataBlockFactory.Register();
-        }
+        public static string GetFilePath() => "Assets/Settings/ThingTypeSettings.asset";
 
+        private static ThingTypeSettings privateInstance;
+        public static ThingTypeSettings instance
+        {
+            get
+            {
+                if (privateInstance == null) 
+                    privateInstance = AssetDatabase.LoadAssetAtPath<ThingTypeSettings>(GetFilePath());
+                
+                return privateInstance;
+            }
+        }
         public static NameCategory ParseName(string ttName)
         {
             var nameCategory = ttName.Split(new [] { " // ", "//", "/", " / "  }, StringSplitOptions.RemoveEmptyEntries);

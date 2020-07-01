@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Iterum.ThingTypes;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -38,13 +39,18 @@ namespace Iterum.DataBlocks
                 rot = Math.Vector3.zero,
             };
             
+            var settings = ThingTypeSettings.instance;
+            
+            var thingTypes = ThingTypeSerializer.DeserializeAll(settings.SavePath);
+            
             // Find thingtyprefs
-            TraverseChild(root, data.root, root.transform);
+            TraverseChild(root, data.root, root.transform, ref thingTypes);
 
             return data;
         }
 
-        private static void TraverseChild(GameObject rootGo, HierarchyNode rootNode, Transform root)
+        private static void TraverseChild(GameObject rootGo, HierarchyNode rootNode, Transform root,
+            ref Dictionary<int, ThingType> thingTypes)
         {
             foreach (Transform childTransform in root)
             {
@@ -62,18 +68,14 @@ namespace Iterum.DataBlocks
                     // not self TT
                     parentTTRef != ttRef)
                 {
-                    var settings = Object.FindObjectOfType<ThingTypeSettings>();
-                    if (settings == null)
-                        throw new Exception("ThingTypeSettings not found");
-                    
-                    var tt = ThingTypeSerializer.Find(settings.SavePath, parentTTRef.ID);
-                    
+
+                    var tt = thingTypes.Values.FirstOrDefault(e => e.ID == parentTTRef.ID);
                     if (tt.HasFlag("HasHierarchy")) continue;
                 }
                 
                 
 
-                var node = new HierarchyNode()
+                var node = new HierarchyNode
                 {
                     id = childTransform.name,
                     pos = (Math.Vector3) childTransform.localPosition,
@@ -82,15 +84,17 @@ namespace Iterum.DataBlocks
                     nodes = new List<HierarchyNode>(),
                 };
                 
-                if (ttRef != null)
-                {
+                var hierarchyTag = childTransform.GetComponent<HierarchyTag>();
+                
+                if (ttRef != null) 
                     node.id = ttRef.ID.ToString();
 
-                    
-                }
+                if (hierarchyTag != null)
+                    node.tag = hierarchyTag.Tag;
+                
                 rootNode.nodes.Add(node);
                 
-                TraverseChild(rootGo, node, childTransform);
+                TraverseChild(rootGo, node, childTransform, ref thingTypes);
 
 
             }
