@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Iterum.ThingTypes
 {
-    
+
     public class ThingTypeSettings : ScriptableObject
     {
         private const string DefaultCategoryName = "Default";
@@ -20,10 +20,14 @@ namespace Iterum.ThingTypes
         {
             get
             {
+#if UNITY_EDITOR
                 if (privateInstance == null) 
                     privateInstance = AssetDatabase.LoadAssetAtPath<ThingTypeSettings>(GetFilePath());
                 
                 return privateInstance;
+#else
+return null;
+#endif
             }
         }
         public static NameCategory ParseName(string ttName)
