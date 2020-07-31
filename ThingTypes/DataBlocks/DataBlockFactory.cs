@@ -17,6 +17,11 @@ namespace Iterum.ThingTypes
         {
             RegisterDynamicDataBlocks();
         }
+        
+        public static void ClearRegister()
+        {
+            factory.Clear();
+        }
 
         private static void RegisterDynamicDataBlocks()
         {

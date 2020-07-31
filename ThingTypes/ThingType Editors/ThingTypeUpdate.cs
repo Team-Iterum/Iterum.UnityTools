@@ -73,6 +73,8 @@ namespace Iterum.ThingTypes
 
             ThingTypeSerializer.Serialize(settings.GetPath(tt), tt);
             
+            DataBlockFactory.ClearRegister();
+            
             Debug.Log($"Updated (DataBlocks) ThingType {tt.Category}/{tt.Name}");
             
         }
@@ -94,6 +96,9 @@ namespace Iterum.ThingTypes
             
             ShapeMeshData.Skip = false;
             ShapeMeshDataArray.Skip = false;
+            
+            DataBlockFactory.ClearRegister();
+            
             Debug.Log($"Updated (DataBlocks) (no mesh) ThingType {tt.Category}/{tt.Name}");
             
         }
