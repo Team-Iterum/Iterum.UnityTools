@@ -70,7 +70,7 @@ namespace Iterum.ThingTypes
                 .Select(ttRef => new MapRef()
             {
                 ID = ttRef.ID,
-                
+                tag = ttRef.GetComponent<ThingTypeMapRef>()  ?  ttRef.GetComponent<ThingTypeMapRef>().Tag : null,
                 position = (Math.Vector3)ttRef.transform.position,
                 rotation = (Math.Vector3)ttRef.transform.eulerAngles,
 

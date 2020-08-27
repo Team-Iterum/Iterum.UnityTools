@@ -5,5 +5,6 @@ namespace Iterum.ThingTypes
     public class ThingTypeMapRef : MonoBehaviour
     {
         public int Id;
+        public string Tag;
     }
 }
