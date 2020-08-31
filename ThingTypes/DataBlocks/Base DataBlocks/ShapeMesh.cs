@@ -40,7 +40,7 @@ namespace Iterum.DataBlocks
             {
                 Debug.Log($"Run GetMeshContent");
                 
-                string content = GetMeshContent(meshFilter.sharedMesh, tt, go.transform.lossyScale);
+                string content = GetMeshContent(meshFilter.sharedMesh, Vector3.zero, go.transform.lossyScale, Quaternion.identity);
 
                 string dirPath = Path.Combine(settings.SavePath, "Mesh");
                 Directory.CreateDirectory(dirPath);
@@ -57,7 +57,7 @@ namespace Iterum.DataBlocks
             return $"// Mesh data '{tt.Category}/{tt.Name}'";
         }
 
-        public static string GetMeshContent(Mesh mesh, ThingType tt, Vector3 scale)
+        public static string GetMeshContent(Mesh mesh, Vector3 translate, Vector3 scale, Quaternion rot)
         {
             var meshVertices = mesh.vertices;    
             StringBuilder vertices = new StringBuilder(meshVertices.Length);
@@ -65,10 +65,17 @@ namespace Iterum.DataBlocks
             for (int j = 0; j < meshVertices.Length; j++)
             {
                 var e = meshVertices[j];
+
+                e = rot * e;
+                
+                e.x += translate.x * (1/scale.x);
+                e.y += translate.y * (1/scale.y);
+                e.z += translate.z * (1/scale.z);
                 
                 e.x *= scale.x;
                 e.y *= scale.y;
                 e.z *= scale.z;
+                
                 
                 vertices.AppendFormat("\nv {0}/{1}/{2}", e.x, e.y, e.z);
 

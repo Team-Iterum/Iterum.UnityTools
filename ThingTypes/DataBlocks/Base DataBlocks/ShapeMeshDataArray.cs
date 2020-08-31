@@ -21,6 +21,14 @@ namespace Iterum.Game
             
             var list = new List<string>();
             var meshes = go.GetComponent<MeshArray>().Meshes;
+            var meshFilters = new List<MeshFilter>();
+            
+            if(meshes.Length == 0)
+            {
+                meshFilters = go.GetComponent<MeshArray>().MesheFilters.ToList();
+                meshes = go.GetComponent<MeshArray>().MesheFilters.Select(e => e.sharedMesh).ToArray();
+                
+            }
             
             var tt = ThingTypeSerializer.Find(settings.SavePath, go.GetComponent<ThingTypeRef>().ID);
             
@@ -38,7 +46,23 @@ namespace Iterum.Game
                 if (!Skip)
                 {
                     Debug.Log($"Run GetMeshContent {i}");
-                    string content = ShapeMeshData.GetMeshContent(mesh, tt, go.transform.lossyScale);
+                    var rot = Quaternion.identity;
+                    if (meshFilters.Count > 0)
+                    {
+                        rot = meshFilters[i].transform.localRotation;
+                    }
+                    var localPos = Vector3.zero;
+                    if (meshFilters.Count > 0)
+                    {
+                        localPos = meshFilters[i].transform.localPosition;
+                    }
+                    var localScale = go.transform.lossyScale;
+                    if (meshFilters.Count > 0)
+                    {
+                        localScale = meshFilters[i].transform.localScale;
+                    }
+                    
+                    string content = ShapeMeshData.GetMeshContent(mesh, localPos, localScale, rot);
                     File.WriteAllText(Path.Combine(dirPath, $"{name}.txt"),
                         $"{ShapeMeshData.GetHeader(tt)}\n{content}");
                 }

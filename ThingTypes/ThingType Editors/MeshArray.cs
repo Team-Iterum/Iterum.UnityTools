@@ -5,5 +5,6 @@ namespace Iterum.Game
     public class MeshArray : MonoBehaviour
     {
         public Mesh[] Meshes;
+        public MeshFilter[] MesheFilters;
     }
 }
