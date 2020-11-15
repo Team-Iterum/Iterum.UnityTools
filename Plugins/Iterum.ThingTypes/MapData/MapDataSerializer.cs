@@ -31,14 +31,16 @@ namespace Iterum.ThingTypes
                 if(overwrite) File.Delete(fileName);
             }
 
-            using StreamWriter w = File.AppendText(fileName);
-            
-            w.Write($"---\n" +
-                    $"# MapData {mapData.Name}\n" +
-                    $"# Created: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\n" +
-                    $"\n");
+            using(StreamWriter w = File.AppendText(fileName))
+            {
                 
-            serializer.Serialize(w, mapData);
+                w.Write($"---\n" +
+                        $"# MapData {mapData.Name}\n" +
+                        $"# Created: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\n" +
+                        $"\n");
+                    
+                serializer.Serialize(w, mapData);
+            }
         }
     }
 }

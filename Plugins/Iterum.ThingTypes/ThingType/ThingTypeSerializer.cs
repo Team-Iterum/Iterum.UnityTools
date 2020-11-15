@@ -89,14 +89,16 @@ namespace Iterum.ThingTypes
                 if(overwrite) File.Delete(fileName);
             }
 
-            using StreamWriter w = File.AppendText(fileName);
+            using(StreamWriter w = File.AppendText(fileName))
+            {
             
-            w.Write($"---\n" +
-                    $"# ThingType #{tt.ID} {tt.Category}/{tt.Name}\n" +
-                    $"# Created: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\n" +
-                    $"\n");
-                
-            serializer.Serialize(w, tt);
+                w.Write($"---\n" +
+                        $"# ThingType #{tt.ID} {tt.Category}/{tt.Name}\n" +
+                        $"# Created: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\n" +
+                        $"\n");
+                    
+                serializer.Serialize(w, tt);
+            }
         }
     }
 }

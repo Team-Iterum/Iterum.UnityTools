@@ -14,7 +14,7 @@ namespace Iterum.ThingTypes
         string[] Flags { get; set; }
         Dictionary<string, string> Attrs { get; set; }
         
-        public IDataBlock[] DataBlocks { get; set; }
+        IDataBlock[] DataBlocks { get; set; }
 
     }
     
