@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Iterum.Logs
 {
@@ -44,23 +47,24 @@ namespace Iterum.Logs
         
         // ReSharper disable Unity.PerformanceAnalysis
         private static void Send(Level level, string group, string s, 
-            ConsoleColor color = ConsoleColor.White, ConsoleColor groupColor = ConsoleColor.Gray, 
+            ConsoleColor color = ConsoleColor.White, ConsoleColor groupColor = ConsoleColor.DarkGray, 
             bool timestamp = true)
         {
-
             if (!Enabled.HasFlag(level)) return;
-   
+            
             var dateTime = DateTime.Now;
             var finalText = string.Empty;
+            var logText = string.Empty;
             
             // Timestamp
             {
                 var foreground = Console.ForegroundColor;
                 if (timestamp)
                 {
-                    var text = $"{dateTime.ToLongTimeString()} ";
+                    var text = $"{dateTime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern)} ";
                     
 #if UNITY_2018_3_OR_NEWER
+                    logText += text;
                     text = Tagged(text, ConsoleColor.DarkGray);
                     finalText += text;
 #else
@@ -77,12 +81,12 @@ namespace Iterum.Logs
                 var foreground = Console.ForegroundColor;
                 if (timestamp)
                 {
-                    var text = $"[{level}] ";
 #if UNITY_2018_3_OR_NEWER
-                    text = Tagged(text, GetColorLevel(level));
-                    finalText += text;
+                    logText += GetLevel(level);
+                    finalText += Tagged(GetLevelUnity(level), GetColorLevel(level));
+                    
 #else
-                    finalText += text;
+                    finalText += $"[{level}] ";
                     Console.ForegroundColor = GetColorLevel(level);
                     Console.Write(text);
                     Console.ForegroundColor = foreground;
@@ -97,6 +101,7 @@ namespace Iterum.Logs
                 {
                     var text = $"[{group}] ";
 #if UNITY_2018_3_OR_NEWER
+                    logText += text;
                     text = Tagged(text, groupColor);
                     finalText += text;
 #else
@@ -111,37 +116,89 @@ namespace Iterum.Logs
             // Text
             {
                 
-#if UNITY_2018_3_OR_NEWER
-
-               s = Tagged(s, color);
-               finalText += s;
+#if UNITY_2018_3_OR_NEWER 
+                logText += s + Environment.NewLine;
+                if (level != Level.Exception)
+                    s = Tagged(s, color);
+                finalText += s;
 #else
                 finalText += s;
                 var foreground = Console.ForegroundColor;
                 Console.ForegroundColor = color;
                 Console.Write(s);
                 Console.ForegroundColor = foreground;
-                Console.Write("\n");
+                Console.Write(Environment.NewLine);
 #endif
             }
 
 #if UNITY_2018_3_OR_NEWER   
             UnityEngine.Debug.Log(finalText);
+            OnLogCallback(dateTime, level, group, s, logText, color);
 #endif
-            OnLogCallback(dateTime, level, group, s, finalText, color);
         }
+
+        private static string GetLevel(Level level)
+        {
+            switch (level)
+            {
+                case Level.None:
+                    break;
+                case Level.Debug:
+                    return "[Debug]   ";
+                case Level.Info:
+                    return "[Info]    ";
+                case Level.Success:
+                    return "[Success] ";
+                case Level.Warn:
+                    return "[Warning] ";
+                case Level.Error:
+                    return "[Error]   ";
+                case Level.Exception:
+                    return "[Exception] ";
+                case Level.Fatal:
+                    return "[Fatal]     ";
+            }
+
+            return string.Empty;
+        }
+        
+        private static string GetLevelUnity(Level level)
+        {
+            switch (level)
+            {
+                case Level.None:
+                    break;
+                case Level.Debug:
+                    return "[Debug]     ";
+                case Level.Info:
+                    return "[Info]          ";
+                case Level.Success:
+                    return "[Success] ";
+                case Level.Warn:
+                    return "[Warning] ";
+                case Level.Error:
+                    return "[Error]     ";
+                case Level.Exception:
+                    return "[Exception] ";
+                case Level.Fatal:
+                    return "[Fatal]     ";
+            }
+
+            return string.Empty;
+        }
+
 
         private static ConsoleColor GetColorLevel(Level level)
         {
             var color = level switch
             {
-                Level.Debug     => ConsoleColor.Cyan,
-                Level.Info      => ConsoleColor.White,
+                Level.Debug     => ConsoleColor.Gray,
+                Level.Info      => ConsoleColor.Blue,
                 Level.Success   => ConsoleColor.Green,
                 Level.Warn      => ConsoleColor.Yellow,
                 Level.Error     => ConsoleColor.Red,
-                Level.Exception => ConsoleColor.DarkRed,
-                Level.Fatal     => ConsoleColor.DarkRed,
+                Level.Exception => ConsoleColor.Red,
+                Level.Fatal     => ConsoleColor.Red,
                 _ => ConsoleColor.White
             };
 
@@ -153,25 +210,25 @@ namespace Iterum.Logs
             string textColor = color switch
             {
                 ConsoleColor.Black       => "#000",
-                ConsoleColor.Blue        => "#00f",
+                ConsoleColor.Blue        => "#88f",
                 ConsoleColor.Cyan        => "#0ff",
                 ConsoleColor.DarkBlue    => "#009",
                 ConsoleColor.DarkCyan    => "#099",
-                ConsoleColor.DarkGray    => "#aaa",
+                ConsoleColor.DarkGray    => "#909090",
                 ConsoleColor.DarkGreen   => "#090",
                 ConsoleColor.DarkMagenta => "#909",
-                ConsoleColor.DarkRed     => "#900",
+                ConsoleColor.DarkRed     => "#b00",
                 ConsoleColor.DarkYellow  => "#aa0",
                 ConsoleColor.Gray        => "#ccc",
                 ConsoleColor.Green       => "#0f0",
                 ConsoleColor.Magenta     => "#f0f",
                 ConsoleColor.Red         => "#f00",
-                ConsoleColor.White       => "#fff",
+                ConsoleColor.White       => "#eee",
                 ConsoleColor.Yellow      => "#ff0",
                 _ => "#fff"
             };
 
-            return $"<{textColor}>text</{textColor}>";
+            return $"<color={textColor}>{text}</color>";
         }
 
 

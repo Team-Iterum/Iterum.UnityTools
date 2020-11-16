@@ -45,6 +45,7 @@ namespace Iterum.Network
 
         private void SendPing()
         {
+            if (!client.Connected) return;
             if (pingTimer.Check())
             {
                 Send(new byte[] {0,255});

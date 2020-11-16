@@ -19,7 +19,7 @@ namespace Iterum.Logs
         public static void Info(string group, string e, ConsoleColor color = ConsoleColor.White)    => Send(Level.Info, group, e, color);
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Success(string group, string e, ConsoleColor color = ConsoleColor.DarkGreen) => Send(Level.Success, group, e, color);
+        public static void Success(string group, string e, ConsoleColor color = ConsoleColor.Green) => Send(Level.Success, group, e, color);
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Warn(string group, string e, ConsoleColor color = ConsoleColor.DarkYellow)    => Send(Level.Warn, group, e, color);

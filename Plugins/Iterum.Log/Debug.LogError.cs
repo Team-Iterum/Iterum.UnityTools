@@ -11,9 +11,12 @@ namespace Iterum.Logs
         public static void Error(string group, string e) => Send(Level.Error, group, e, ConsoleColor.DarkRed);
 
         #region Overloads
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Exception(string group, Exception e) => Send(Level.Exception, group, e.ToString(), ConsoleColor.Red);
+        public static void Exception(string group, Exception e)
+        {
+            Send(Level.Exception, group, e.ToString(), ConsoleColor.Red);
+        }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Exception(Exception e) => Send(Level.Exception, null, e.ToString(), ConsoleColor.Red);
         
