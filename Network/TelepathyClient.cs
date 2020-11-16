@@ -1,10 +1,9 @@
 using System;
 using System.Diagnostics;
+using Iterum.Logs;
 using Iterum.Utils;
 using Telepathy;
-using Debug = UnityEngine.Debug;
 using EventType = Telepathy.EventType;
-using Logger = Telepathy.Logger;
 
 namespace Iterum.Network
 {
@@ -33,9 +32,9 @@ namespace Iterum.Network
             client = new Client();
 
             // use Debug.Log functions for Telepathy so we can see it in the console
-            Logger.Log = Debug.Log;
-            Logger.LogWarning = Debug.LogWarning;
-            Logger.LogError = Debug.LogError;
+            Logger.Log = s => Log.Info(LogGroup, s);
+            Logger.LogWarning = s => Log.Warn(LogGroup, s);
+            Logger.LogError =s => Log.Error(LogGroup, s);
         }
 
         public void Stop()
@@ -64,17 +63,13 @@ namespace Iterum.Network
                 switch (msg.eventType)
                 {
                     case EventType.Connected:
-                        Debug.Log($"Client connected - {Address}");
+                        Log.Info(LogGroup, $"Connected - {Address}");
                         
                         Connected?.Invoke();
                         break;
                     case EventType.Data:
                         // ping answer
-                        if (msg.data[0] == 0 && msg.data[1] == 254)
-                        {
-                            RTT = TimeConvert.TicksToMs(pingSw.ElapsedTicks);
-                        }
-                        
+                        CheckPing(ref msg);
                         var networkMessage = new NetworkMessage
                         {
                             Data = msg.data,
@@ -82,11 +77,19 @@ namespace Iterum.Network
                         Received?.Invoke(ref networkMessage);
                         break;
                     case EventType.Disconnected:
-                        Debug.Log($"Client disconnected");
+                        Log.Info(LogGroup, "Disconnected");
                         
                         Disconnected?.Invoke();
                         break;
                 }
+            }
+        }
+
+        private void CheckPing(ref Message msg)
+        {
+            if (msg.data[0] == 0 && msg.data[1] == 254)
+            {
+                RTT = TimeConvert.TicksToMs(pingSw.ElapsedTicks);
             }
         }
 
@@ -98,10 +101,11 @@ namespace Iterum.Network
         public void Start(string host, int port)
         {
             Address = $"{host}:{port}";
-            Debug.Log($"Client connecting... - {Address}");
+            Log.Info(LogGroup, $"Connecting... - {Address}");
             client.Connect(host, port);
         }
 
+        private const string LogGroup = "TelepathyClient";
         private string Address { get; set; }
     }
 
