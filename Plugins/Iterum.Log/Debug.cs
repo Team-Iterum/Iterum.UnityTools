@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define UNITY_2018_3_OR_NEWER
+using System;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -190,43 +191,94 @@ namespace Iterum.Logs
 
         private static ConsoleColor GetColorLevel(Level level)
         {
-            var color = level switch
+            ConsoleColor color;
+            switch (level)
             {
-                Level.Debug     => ConsoleColor.Gray,
-                Level.Info      => ConsoleColor.Blue,
-                Level.Success   => ConsoleColor.Green,
-                Level.Warn      => ConsoleColor.Yellow,
-                Level.Error     => ConsoleColor.Red,
-                Level.Exception => ConsoleColor.Red,
-                Level.Fatal     => ConsoleColor.Red,
-                _ => ConsoleColor.White
-            };
+                case Level.Debug:
+                    color = ConsoleColor.Cyan;
+                    break;
+                case Level.Info:
+                    color = ConsoleColor.White;
+                    break;
+                case Level.Success:
+                    color = ConsoleColor.Green;
+                    break;
+                case Level.Warn:
+                    color = ConsoleColor.Yellow;
+                    break;
+                case Level.Error:
+                    color = ConsoleColor.Red;
+                    break;
+                case Level.Exception:
+                case Level.Fatal:
+                    color = ConsoleColor.DarkRed;
+                    break;
+                default:
+                    color = ConsoleColor.White;
+                    break;
+            }
 
             return color;
         }
         
         private static string Tagged(string text, ConsoleColor color)
         {
-            string textColor = color switch
+            string textColor;
+            
+            switch (color)
             {
-                ConsoleColor.Black       => "#000",
-                ConsoleColor.Blue        => "#88f",
-                ConsoleColor.Cyan        => "#0ff",
-                ConsoleColor.DarkBlue    => "#009",
-                ConsoleColor.DarkCyan    => "#099",
-                ConsoleColor.DarkGray    => "#909090",
-                ConsoleColor.DarkGreen   => "#090",
-                ConsoleColor.DarkMagenta => "#909",
-                ConsoleColor.DarkRed     => "#b00",
-                ConsoleColor.DarkYellow  => "#aa0",
-                ConsoleColor.Gray        => "#ccc",
-                ConsoleColor.Green       => "#0f0",
-                ConsoleColor.Magenta     => "#f0f",
-                ConsoleColor.Red         => "#f00",
-                ConsoleColor.White       => "#eee",
-                ConsoleColor.Yellow      => "#ff0",
-                _ => "#fff"
-            };
+                case ConsoleColor.Black:
+                    textColor = "#000";
+                    break;
+                case ConsoleColor.Blue:
+                    textColor = "#88f";
+                    break;
+                case ConsoleColor.Cyan:
+                    textColor = "#0ff";
+                    break;
+                case ConsoleColor.DarkBlue:
+                    textColor = "#009";
+                    break;
+                case ConsoleColor.DarkCyan:
+                    textColor = "#099";
+                    break;
+                case ConsoleColor.DarkGray:
+                    textColor = "#909090";
+                    break;
+                case ConsoleColor.DarkGreen:
+                    textColor = "#090";
+                    break;
+                case ConsoleColor.DarkMagenta:
+                    textColor = "#909";
+                    break;
+                case ConsoleColor.DarkRed:
+                    textColor = "#b00";
+                    break;
+                case ConsoleColor.DarkYellow:
+                    textColor = "#aa0";
+                    break;
+                case ConsoleColor.Gray:
+                    textColor = "#ccc";
+                    break;
+                case ConsoleColor.Green:
+                    textColor = "#0f0";
+                    break;
+                case ConsoleColor.Magenta:
+                    textColor = "#f0f";
+                    break;
+                case ConsoleColor.Red:
+                    textColor = "#f00";
+                    break;
+                case ConsoleColor.White:
+                    textColor = "#eee";
+                    break;
+                case ConsoleColor.Yellow:
+                    textColor = "#ff0";
+                    break;
+                default:
+                    textColor = "#fff";
+                    break;
+            }
 
             return $"<color={textColor}>{text}</color>";
         }
