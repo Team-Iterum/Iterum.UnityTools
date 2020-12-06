@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Iterum.Logs;
 using Iterum.Utils;
@@ -18,6 +19,8 @@ namespace Iterum.Network
 
         private Stopwatch pingSw;
         private StopwatchTimer pingTimer;
+
+        private Queue<NetworkMessage> queue = new Queue<NetworkMessage>();
         
         public double RTT { get; private set; }
 
@@ -56,6 +59,15 @@ namespace Iterum.Network
 
         public void Update()
         {
+            if (Immediate)
+            {
+                while (queue.Count > 0)
+                {
+                    var networkMessage = queue.Dequeue();
+                    Received?.Invoke(ref networkMessage);
+                }
+            }
+
             SendPing();
             
             // grab all new messages. do this in your Update loop.
@@ -75,7 +87,16 @@ namespace Iterum.Network
                         {
                             Data = msg.data,
                         };
-                        Received?.Invoke(ref networkMessage);
+
+                        
+                        
+                        if(!Immediate)
+                            queue.Enqueue(networkMessage);
+                        else
+                        {
+                            Received?.Invoke(ref networkMessage);
+                        }
+
                         break;
                     case EventType.Disconnected:
                         Log.Info(LogGroup, "Disconnected");
@@ -108,6 +129,8 @@ namespace Iterum.Network
 
         private const string LogGroup = "TelepathyClient";
         private string Address { get; set; }
+
+        public bool Immediate { get; set; } = true;
     }
 
     public delegate void ReceiveNetworkMessage(ref NetworkMessage msg);
