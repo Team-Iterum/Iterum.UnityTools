@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Iterum.DataBlocks;
+using Iterum.Logs;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -64,13 +65,13 @@ namespace Iterum.ThingTypes
                 Stopwatch sw = new Stopwatch();
                 try
                 {
-                    Debug.Log($"Run: {attr}...");
+                    Log.Debug($"Run: {attr}...");
                     
                     sw.Start();
                     var block = factory[attr].Invoke(go);
                     sw.Stop();
                     
-                    Debug.Log($"End: {attr} Time: {sw.Elapsed.TotalSeconds}s");
+                    Log.Debug($"End: {attr} Time: {sw.Elapsed.TotalSeconds}s");
                     
                     dataBlocks.Add(block);
                 }

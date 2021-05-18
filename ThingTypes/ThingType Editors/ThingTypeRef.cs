@@ -6,7 +6,6 @@ namespace Iterum.ThingTypes
     public class ThingTypeRef : MonoBehaviour, IPrefabRef
     {
         [SerializeField]
-        [FormerlySerializedAs("ID")]
         private int Id;
 
         public int ID

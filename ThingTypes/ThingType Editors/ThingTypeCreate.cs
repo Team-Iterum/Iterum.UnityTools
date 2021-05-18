@@ -1,5 +1,6 @@
 using EasyButtons;
 #if UNITY_EDITOR
+using Iterum.Logs;
 using UnityEditor;
 #endif
 using UnityEngine;
@@ -28,11 +29,11 @@ namespace Iterum.ThingTypes
                 Description = string.Empty, 
                 Category = nameCategory.Category,
             };
-
-            settings.ID += 1;
-
+            
             ThingTypeSerializer.Serialize(settings.GetPath(tt), tt);
 
+            settings.ID += 1;
+            
             DestroyImmediate(GetComponent<ThingTypeRef>());
             DestroyImmediate(GetComponent<ThingTypeUpdate>());
             
@@ -42,7 +43,7 @@ namespace Iterum.ThingTypes
             gameObject.AddComponent<ThingTypeUpdate>();
             DestroyImmediate(this);
             
-            Debug.Log($"Created ThingType {tt.Category}/{tt.Name}");
+            Log.Success("ThingTypeCreate", $"Created ThingType {tt.Category}/{tt.Name}");
         }
 #endif
     }

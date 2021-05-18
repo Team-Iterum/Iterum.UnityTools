@@ -53,6 +53,10 @@ namespace Iterum.Logs
         {
             if (!Enabled.HasFlag(level)) return;
             
+#if UNITY_EDITOR
+                timestamp = false;
+#endif
+            
             var dateTime = DateTime.Now;
             var finalText = string.Empty;
             var logText = string.Empty;

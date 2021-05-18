@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace Iterum.ThingTypes
 {
-
+    
     public class ThingTypeSettings : ScriptableObject
     {
         private const string DefaultCategoryName = "Default";
         
-        public string SavePath = "../ThingTypes";
+        public string SavePath = "../Shared/ThingTypes";
         public int ID = 1;
 
         public static string GetFilePath() => "Assets/Settings/ThingTypeSettings.asset";
@@ -24,12 +24,25 @@ namespace Iterum.ThingTypes
                 if (privateInstance == null) 
                     privateInstance = AssetDatabase.LoadAssetAtPath<ThingTypeSettings>(GetFilePath());
                 
+                if(privateInstance == null)
+                    privateInstance = Create();
+                
                 return privateInstance;
 #else
 return null;
 #endif
             }
         }
+#if UNITY_EDITOR
+        private static ThingTypeSettings Create()
+        {
+            var settings = ScriptableObject.CreateInstance<ThingTypeSettings>();
+            AssetDatabase.CreateAsset(settings, GetFilePath());
+            AssetDatabase.Refresh();
+            return settings;
+        }
+#endif
+
         public static NameCategory ParseName(string ttName)
         {
             var nameCategory = ttName.Split(new [] { " // ", "//", "/", " / "  }, StringSplitOptions.RemoveEmptyEntries);

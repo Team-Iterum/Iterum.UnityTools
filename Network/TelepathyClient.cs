@@ -37,7 +37,7 @@ namespace Iterum.Network
             // use Debug.Log functions for Telepathy so we can see it in the console
             Logger.Log = s => Log.Info(LogGroup, s);
             Logger.LogWarning = s => Log.Warn(LogGroup, s);
-            Logger.LogError =s => Log.Error(LogGroup, s);
+            Logger.LogError = s => Log.Error(LogGroup, s);
         }
 
         public void Stop()
@@ -118,6 +118,12 @@ namespace Iterum.Network
         public void Send(byte[] bytes)
         {
             client.Send(bytes);
+        }
+
+        
+        public void Send<T>(T packet) where T : struct, ISerializablePacket
+        {
+            client.Send(packet.Serialize());
         }
 
         public void Start(string host, int port)

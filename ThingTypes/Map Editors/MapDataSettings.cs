@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EasyButtons;
+using Iterum.Logs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -90,7 +91,7 @@ namespace Iterum.ThingTypes
             MapDataSerializer.Serialize(GetPath(md.Name), md);
             
             
-            Debug.Log($"Updated MapData {md.Name} RefsCount: {md.Refs.Length}");
+            Log.Info("MapDataSettings", $"Updated MapData {md.Name} RefsCount: {md.Refs.Length}");
         }
 
         private string GetPath(string mName)

@@ -24,19 +24,19 @@ namespace Iterum.ThingTypes
             
             if (settings == null)
             {
-                Debug.LogError("ThingTypeSettings not found");
+                Log.Error("ThingTypeUpdate", "ThingTypeSettings not found");
                 return false;
             }
             if (thingTypeRef == null)
             {
-                Debug.LogError("ThingTypeRef not found");
+                Log.Error("ThingTypeUpdate", "ThingTypeRef not found");
                 return false;
             }
                         
             tt = ThingTypeSerializer.Find(settings.SavePath, thingTypeRef.ID);
             if (tt.Name == null)
             {
-                Debug.LogError($"ThingType '{thingTypeRef.ID}' not found");
+                Log.Error("ThingTypeUpdate", $"ThingType '{thingTypeRef.ID}' not found");
                 return false;
             }
             
