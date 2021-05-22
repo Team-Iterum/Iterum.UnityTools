@@ -30,7 +30,13 @@ namespace Iterum.ThingTypes
             var tt = thingTypes.FirstOrDefault(e => e.ID == id);
             return tt;
         }
-        
+
+        public static ThingType Find(Dictionary<int, ThingType> all, int id)
+        {
+            var tt = all.Values.FirstOrDefault(e => e.ID == id);
+            return tt;
+        }
+
         private static IEnumerable<Type> GetDataBlocksTypes() 
         {
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) 

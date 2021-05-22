@@ -62,15 +62,17 @@ namespace Iterum.ThingTypes
                             .Replace("\r", "")
                             .Replace("\n", "")
                             .Split(' ');;
-            
-            
+
+
+            var thingTypes = ThingTypeSerializer.DeserializeAll(settings.SavePath);
             
             md.Refs = refs
                 // exclude categories
-                .Where(ttr => !exclude.Contains(ThingTypeSerializer.Find(settings.SavePath, ttr.ID).Category))
-                .Select(ttRef => new MapRef()
+                .Where(ttr => !exclude.Contains(ThingTypeSerializer.Find(thingTypes, ttr.ID).Category))
+                .Select(ttRef => new MapRef
             {
                 ID = ttRef.ID,
+                name = ttRef.gameObject.name,
                 tag = ttRef.GetComponent<ThingTypeMapRef>()  ?  ttRef.GetComponent<ThingTypeMapRef>().Tag : null,
                 position = (Math.Vector3)ttRef.transform.position,
                 rotation = (Math.Vector3)ttRef.transform.eulerAngles,
@@ -91,7 +93,7 @@ namespace Iterum.ThingTypes
             MapDataSerializer.Serialize(GetPath(md.Name), md);
             
             
-            Log.Info("MapDataSettings", $"Updated MapData {md.Name} RefsCount: {md.Refs.Length}");
+            Log.Success("MapDataSettings", $"Updated MapData {md.Name} RefsCount: {md.Refs.Length}");
         }
 
         private string GetPath(string mName)

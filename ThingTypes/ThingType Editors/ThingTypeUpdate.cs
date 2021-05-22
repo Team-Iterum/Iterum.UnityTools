@@ -1,6 +1,5 @@
 using EasyButtons;
 using Iterum.DataBlocks;
-using Iterum.Game;
 using Iterum.Logs;
 using UnityEngine;
 
@@ -54,7 +53,7 @@ namespace Iterum.ThingTypes
 
             ThingTypeSerializer.Serialize(settings.GetPath(tt), tt);
             
-            Log.Info("ThingTypeUpdate", $"Updated (Name, Category) ThingType {tt.Category}/{tt.Name}");
+            Log.Success("ThingTypeUpdate", $"Updated (Name, Category) ThingType {tt.Category}/{tt.Name}");
             
         }
       
@@ -76,7 +75,7 @@ namespace Iterum.ThingTypes
             
             DataBlockFactory.ClearRegister();
             
-            Log.Info("ThingTypeUpdate", $"Updated (DataBlocks) ThingType {tt.Category}/{tt.Name}");
+            Log.Success("ThingTypeUpdate", $"Updated (DataBlocks) ThingType {tt.Category}/{tt.Name}");
             
         }
         
@@ -100,7 +99,7 @@ namespace Iterum.ThingTypes
             
             DataBlockFactory.ClearRegister();
             
-            Log.Info("ThingTypeUpdate", $"Updated (DataBlocks) (no mesh) ThingType {tt.Category}/{tt.Name}");
+            Log.Success("ThingTypeUpdate", $"Updated (DataBlocks) (no mesh) ThingType {tt.Category}/{tt.Name}");
             
         }
 

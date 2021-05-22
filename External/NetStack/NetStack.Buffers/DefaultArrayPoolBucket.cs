@@ -116,7 +116,7 @@ namespace NetStack.Buffers {
 
 			internal void Return(T[] array) {
 				if (array.Length != _bufferLength)
-					throw new ArgumentException("BufferNotFromPool", "array");
+					throw new ArgumentException("BufferNotFromPool", nameof(array));
 
 				#if NET_4_6 || NET_STANDARD_2_0
 					bool lockTaken = false;

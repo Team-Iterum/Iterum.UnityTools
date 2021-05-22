@@ -491,7 +491,7 @@ namespace NetStack.Serialization {
 #endif
         public BitBuffer AddString(string value) {
             if (value == null)
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
 
             
             var bytes = Encoding.UTF8.GetBytes(value);
@@ -555,23 +555,6 @@ namespace NetStack.Serialization {
 			}
 
 			return shiftCount;
-		}
-
-		private static byte ToASCII(char character) {
-			byte value = 0;
-
-			try {
-				value = Convert.ToByte(character);
-			}
-
-			catch (OverflowException) {
-				throw new Exception("Cannot convert to ASCII: " + character);
-			}
-
-			if (value > 127)
-				throw new Exception("Cannot convert to ASCII: " + character);
-
-			return value;
 		}
 	}
 }

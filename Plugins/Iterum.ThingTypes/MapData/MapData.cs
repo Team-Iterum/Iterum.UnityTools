@@ -48,6 +48,7 @@ namespace Iterum.ThingTypes
     public class MapRef
     {
         public int ID;
+        public string name;
         public string tag;
         public float[] position;
         public float[] rotation;

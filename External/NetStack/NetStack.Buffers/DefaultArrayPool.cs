@@ -33,10 +33,10 @@ namespace NetStack.Buffers {
 
 		internal DefaultArrayPool(int maxArrayLength, int maxArraysPerBucket) {
 			if (maxArrayLength <= 0)
-				throw new ArgumentOutOfRangeException("maxArrayLength");
+				throw new ArgumentOutOfRangeException(nameof(maxArrayLength));
 
 			if (maxArraysPerBucket <= 0)
-				throw new ArgumentOutOfRangeException("maxArraysPerBucket");
+				throw new ArgumentOutOfRangeException(nameof(maxArraysPerBucket));
 
 			const int MinimumArrayLength = 0x10, MaximumArrayLength = 0x40000000;
 
@@ -64,7 +64,7 @@ namespace NetStack.Buffers {
 
 		public override T[] Rent(int minimumLength) {
 			if (minimumLength < 0)
-				throw new ArgumentOutOfRangeException("minimumLength");
+				throw new ArgumentOutOfRangeException(nameof(minimumLength));
 			else if (minimumLength == 0)
 				return s_emptyArray ?? (s_emptyArray = new T[0]);
 

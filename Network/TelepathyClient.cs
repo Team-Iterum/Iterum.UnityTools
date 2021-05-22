@@ -38,6 +38,8 @@ namespace Iterum.Network
             Logger.Log = s => Log.Info(LogGroup, s);
             Logger.LogWarning = s => Log.Warn(LogGroup, s);
             Logger.LogError = s => Log.Error(LogGroup, s);
+            
+            Log.Success(nameof(TelepathyClient), "Created");
         }
 
         public void Stop()
@@ -82,13 +84,13 @@ namespace Iterum.Network
                         break;
                     case EventType.Data:
                         // ping answer
-                        CheckPing(ref msg);
+                        if(CheckPing(ref msg)) return;
+                        
                         var networkMessage = new NetworkMessage
                         {
                             Data = msg.data,
                         };
 
-                        
                         
                         if(!Immediate)
                             queue.Enqueue(networkMessage);
@@ -107,19 +109,21 @@ namespace Iterum.Network
             }
         }
 
-        private void CheckPing(ref Message msg)
+        private bool CheckPing(ref Message msg)
         {
             if (msg.data[0] == 0 && msg.data[1] == 254)
             {
                 RTT = TimeConvert.TicksToMs(pingSw.ElapsedTicks);
+                return true;
             }
+
+            return false;
         }
 
         public void Send(byte[] bytes)
         {
             client.Send(bytes);
         }
-
         
         public void Send<T>(T packet) where T : struct, ISerializablePacket
         {

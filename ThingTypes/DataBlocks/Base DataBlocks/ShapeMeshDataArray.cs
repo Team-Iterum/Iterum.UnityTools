@@ -6,7 +6,7 @@ using Iterum.DataBlocks;
 using Iterum.ThingTypes;
 using UnityEngine;
 
-namespace Iterum.Game
+namespace Iterum.DataBlocks
 {
     [AutoRegisterDataBlock("ShapeMeshArray", nameof(Create))]
     public class ShapeMeshDataArray : IDataBlock

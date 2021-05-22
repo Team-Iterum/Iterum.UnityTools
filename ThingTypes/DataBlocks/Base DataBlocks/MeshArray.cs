@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Iterum.Game
+namespace Iterum.DataBlocks
 {
     public class MeshArray : MonoBehaviour
     {
