@@ -53,7 +53,7 @@ namespace Iterum.Logs
         {
             if (!Enabled.HasFlag(level)) return;
             
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_WEBGL
                 timestamp = false;
 #endif
             
@@ -283,8 +283,11 @@ namespace Iterum.Logs
                     textColor = "#fff";
                     break;
             }
-
+#if UNITY_EDITOR
             return $"<color={textColor}>{text}</color>";
+#else
+            return text;
+#endif
         }
 
 
