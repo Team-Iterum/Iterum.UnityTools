@@ -5,7 +5,7 @@ using EasyButtons;
 using Iterum.Logs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using static Iterum.BaseSystems.TTManagerAlias;
 namespace Iterum.ThingTypes
 {
     [ExecuteInEditMode]
@@ -62,12 +62,11 @@ namespace Iterum.ThingTypes
                             .Replace("\n", "")
                             .Split(' ');;
 
-
-            var thingTypes = ThingTypeSerializer.DeserializeAll(settings.SavePath);
+            
             
             md.Refs = refs
                 // exclude categories
-                .Where(ttr => !exclude.Contains(ThingTypeSerializer.Find(thingTypes, ttr.ID).Category))
+                .Where(ttr => !exclude.Contains(TTStore.Find(ttr.ID).Category))
                 .Select(ttRef => new MapRef
             {
                 ID = ttRef.ID,

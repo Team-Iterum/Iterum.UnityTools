@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
+using System.Linq;
 using Iterum.Logs;
 using Iterum.ThingTypes;
 using UnityEditor;
@@ -17,7 +18,11 @@ namespace Iterum.BaseSystems
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
             var group = settings.FindGroup("ThingTypes") ?? settings.DefaultGroup;
-            var guids = AssetDatabase.FindAssets("t:Prefab", new[] {"Assets/ThingTypeRefs"});
+            var dirToFind = "Assets/ThingTypeRefs";
+
+            var dirs = AssetDatabase.GetSubFolders(dirToFind).ToList();
+            dirs.Insert(0, dirToFind);
+            var guids = AssetDatabase.FindAssets("t:Prefab", dirs.ToArray());
      
             var entriesAdded = new List<AddressableAssetEntry>();
             foreach (string guid in guids)

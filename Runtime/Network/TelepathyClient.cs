@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Iterum.BaseSystems;
 using Iterum.Logs;
 using Iterum.Utils;
 using Telepathy;
 using EventType = Telepathy.EventType;
+using Log = Iterum.Logs.Log;
 
 namespace Iterum.Network
 {
@@ -32,14 +34,16 @@ namespace Iterum.Network
             pingTimer = new StopwatchTimer(1f);
             
             // create and connect the client
-            client = new Client();
+            var maxMessageSize = 64 * 1024;
+            client = new Client(maxMessageSize);
+            client.OnConnected = Client_Connected;
+            client.OnDisconnected = Client_Disconnected;
+            client.OnData = Client_Received;
 
             // use Debug.Log functions for Telepathy so we can see it in the console
-            Logger.Log = s => Log.Info(LogGroup, s);
-            Logger.LogWarning = s => Log.Warn(LogGroup, s);
-            Logger.LogError = s => Log.Error(LogGroup, s);
-            
-            Log.Success(nameof(TelepathyClient), "Created");
+            Telepathy.Log.Info = s => Logs.Log.Info(LogGroup, s);
+            Telepathy.Log.Warning = s => Logs.Log.Warn(LogGroup, s);
+            Telepathy.Log.Error = s => Logs.Log.Error(LogGroup, s);
         }
 
         public void Stop()
@@ -61,57 +65,41 @@ namespace Iterum.Network
 
         public void Update()
         {
-            if (Immediate)
-            {
-                while (queue.Count > 0)
-                {
-                    var networkMessage = queue.Dequeue();
-                    Received?.Invoke(ref networkMessage);
-                }
-            }
-
             SendPing();
-            
-            // grab all new messages. do this in your Update loop.
-            while (client.GetNextMessage(out Message msg))
-            {
-                switch (msg.eventType)
-                {
-                    case EventType.Connected:
-                        Log.Info(LogGroup, $"Connected - {Address}");
-                        
-                        Connected?.Invoke();
-                        break;
-                    case EventType.Data:
-                        // ping answer
-                        if(CheckPing(ref msg)) return;
-                        
-                        var networkMessage = new NetworkMessage
-                        {
-                            Data = msg.data,
-                        };
 
-                        
-                        if(!Immediate)
-                            queue.Enqueue(networkMessage);
-                        else
-                        {
-                            Received?.Invoke(ref networkMessage);
-                        }
-
-                        break;
-                    case EventType.Disconnected:
-                        Log.Info(LogGroup, "Disconnected");
-                        
-                        Disconnected?.Invoke();
-                        break;
-                }
-            }
+            client.Tick(10000);
         }
 
-        private bool CheckPing(ref Message msg)
+        private void Client_Disconnected()
         {
-            if (msg.data.Length == 2 && msg.data[0] == 0 && msg.data[1] == 254)
+            Log.Info(LogGroup, "Disconnected");
+
+            Disconnected?.Invoke();
+        }
+
+        private void Client_Received(ArraySegment<byte> msg)
+        {
+            // ping answer
+            if (CheckPing(msg)) return;
+
+            var networkMessage = new NetworkMessage
+            {
+                dataSegment = msg
+            };
+
+            Received?.Invoke(ref networkMessage);
+        }
+
+        private void Client_Connected()
+        {
+            Log.Info(LogGroup, $"Connected - {Address}");
+
+            Connected?.Invoke();
+        }
+
+        private bool CheckPing(ArraySegment<byte> msg)
+        {
+            if (msg.Count == 2 && msg[0] == 0 && msg[1] == 254)
             {
                 RTT = TimeConvert.TicksToMs(pingSw.ElapsedTicks);
                 return true;
@@ -120,12 +108,12 @@ namespace Iterum.Network
             return false;
         }
 
-        public void Send(byte[] bytes)
+        public void Send(ArraySegment<byte> bytes)
         {
             client.Send(bytes);
         }
         
-        public void Send<T>(T packet) where T : struct, ISerializablePacket
+        public void Send<T>(T packet) where T : struct, ISerializablePacketSegment
         {
             client.Send(packet.Serialize());
         }
@@ -133,14 +121,13 @@ namespace Iterum.Network
         public void Start(string host, int port)
         {
             Address = $"{host}:{port}";
-            Log.Info(LogGroup, $"Connecting... - {Address}");
+            Log.Debug(LogGroup, $"Connecting... - {Address}");
             client.Connect(host, port);
         }
 
         private const string LogGroup = "TelepathyClient";
         private string Address { get; set; }
-
-        public bool Immediate { get; set; } = true;
+        
     }
 
     public delegate void ReceiveNetworkMessage(ref NetworkMessage msg);

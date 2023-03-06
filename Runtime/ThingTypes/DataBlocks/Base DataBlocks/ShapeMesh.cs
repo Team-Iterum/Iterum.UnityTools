@@ -5,6 +5,7 @@ using System.Text;
 using Iterum.ThingTypes;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using static Iterum.BaseSystems.TTManagerAlias;
 
 namespace Iterum.DataBlocks
 {
@@ -37,7 +38,7 @@ namespace Iterum.DataBlocks
 
 
             var settings = ThingTypeSettings.instance;
-            var tt = ThingTypeSerializer.Find(settings.SavePath, go.GetComponent<ThingTypeRef>().ID);
+            var tt = TTStore.Find(go.GetComponent<ThingTypeRef>().ID);
 
             ShapeMeshData data = new ShapeMeshData
             {

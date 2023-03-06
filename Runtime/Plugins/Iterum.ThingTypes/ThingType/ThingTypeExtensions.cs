@@ -7,30 +7,40 @@ namespace Iterum.ThingTypes
 {
     public static class TTExtensions
     {
-        public static string GetAttr(this IThingType tt, string attr)
-        {
-            if (tt.Attrs == null) return null;
-            if (!tt.Attrs.ContainsKey(attr)) return null;
-            return tt.Attrs[attr];
-        }
-        
-        public static bool HasFlag(this IThingType tt, string flag)
+        public static bool HasFlag(this ThingType tt, string flag)
         {
             return tt.Flags != null && tt.Flags.Contains(flag);
         }
-        
 
-        #region Float Attr Accessors
-
-        public static float GetFloat(this IThingType tt, string attr)
+        public static string GetAttr(this ThingType tt, string attr, string def = null)
         {
-            return float.TryParse(tt.GetAttr(attr), 
-                NumberStyles.Any, CultureInfo.InvariantCulture, out float result)
-                ? result : 0;
+            if (tt.Attrs == null) return def;
+            if (!tt.Attrs.ContainsKey(attr)) return def;
+            return tt.Attrs[attr];
         }
 
-        public static float[] GetFloat2(this IThingType tt, string attr)
+        public static string Str(this ThingType tt, string attr, string def = null)
         {
+            if (tt.Attrs == null) return def;
+            if (!tt.Attrs.ContainsKey(attr)) return def;
+            return tt.Attrs[attr];
+        }
+
+        #region Float Attr Accessors
+        
+        public static float Float(this ThingType tt, string attr, float def = 0)
+        {
+            if(tt.GetAttr(attr) == null) return def;
+
+            return float.TryParse(tt.GetAttr(attr), 
+                NumberStyles.Any, CultureInfo.InvariantCulture, out float result)
+                ? result : def;
+        }
+
+        public static float[] Float2(this ThingType tt, string attr, float[] def = null)
+        {
+            if(tt.GetAttr(attr) == null) return def;
+
             var str = tt.GetAttr(attr).Split(' ');
             return new[]
             {
@@ -39,8 +49,10 @@ namespace Iterum.ThingTypes
             };
         }
 
-        public static float[] GetFloat3(this IThingType tt, string attr)
+        public static float[] Float3(this ThingType tt, string attr, float[] def = null)
         {
+            if(tt.GetAttr(attr) == null) return def;
+
             var str = tt.GetAttr(attr).Split(' ');
             return new[]
             {
@@ -54,16 +66,21 @@ namespace Iterum.ThingTypes
 
 
         #region Int Attrs Accessors
+        
 
-        public static int GetInt(this IThingType tt, string attr)
+        public static int Int(this ThingType tt, string attr, int def = 0)
         {
+            if(tt.GetAttr(attr) == null) return def;
+
             return int.TryParse(tt.GetAttr(attr), 
                 NumberStyles.Any, CultureInfo.InvariantCulture, out int result)
-                ? result : 0;
+                ? result : def;
         }
 
-        public static int[] GetInt2(this IThingType tt, string attr)
+        public static int[] Int2(this ThingType tt, string attr, int[] def = null)
         {
+            if(tt.GetAttr(attr) == null) return def;
+
             var str = tt.GetAttr(attr).Split(' ');
             return new[]
             {
@@ -72,8 +89,11 @@ namespace Iterum.ThingTypes
             };
         }
 
-        public static int[] GetInt3(this IThingType tt, string attr)
+        
+        public static int[] Int3(this ThingType tt, string attr, int[] def = null)
         {
+            if(tt.GetAttr(attr) == null) return def;
+
             var str = tt.GetAttr(attr).Split(' ');
             return new[]
             {
@@ -83,16 +103,22 @@ namespace Iterum.ThingTypes
             };
         }
 
+
         #endregion
 
         #region Enum & DataBlock
 
-        public static T GetEnum<T>(this IThingType tt, string attr) where T : struct, Enum
+        public static T GetEnum<T>(this ThingType tt, string attr) where T : struct, Enum
         {
-            return (T)Enum.Parse(typeof(T), tt.GetAttr(attr),true);
+            return Enum.Parse<T>(tt.GetAttr(attr), true);
+        }
+        
+        public static T GetEnum<T>(this ThingType tt) where T : struct, Enum
+        {
+            return Enum.Parse<T>(tt.GetAttr(typeof(T).Name), true);
         }
 
-        public static T GetData<T>(this IThingType tt) where T : class, IDataBlock
+        public static T GetData<T>(this ThingType tt) where T : class, IDataBlock
         {
             return ((ThingType) tt).DataBlocks.FirstOrDefault(e => e is T) as T;
         }

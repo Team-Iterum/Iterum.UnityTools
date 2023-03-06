@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Iterum.ThingTypes;
 using NetStack.Serialization;
 using UnityEngine;
+using static Iterum.BaseSystems.TTManagerAlias;
 
 namespace Iterum.DataBlocks
 {
@@ -30,7 +31,7 @@ namespace Iterum.DataBlocks
             if (!td) 
                 throw new Exception("Factory TerrainShape: TerrainData not found");
             
-            var tt = ThingTypeSerializer.Find(settings.SavePath, go.GetComponent<ThingTypeRef>().ID);
+            var tt = TTStore.Find(go.GetComponent<ThingTypeRef>().ID);
             
             string name = $"{tt.Name}_TerrainHeightmap";
 

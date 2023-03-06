@@ -1,7 +1,12 @@
-﻿namespace Iterum.Network
+﻿using System;
+
+namespace Iterum.Network
 {
     public struct NetworkMessage
     {
-        public byte[] Data;
+        public byte[] data;
+        public ArraySegment<byte> dataSegment;
+
     }
+
 }

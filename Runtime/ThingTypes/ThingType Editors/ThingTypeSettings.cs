@@ -1,9 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Iterum.Logs;
+using Iterum.BaseSystems;
 using UnityEditor;
 using UnityEngine;
+using static Iterum.BaseSystems.TTManagerAlias;
 
 namespace Iterum.ThingTypes
 {
@@ -36,6 +36,14 @@ return null;
 #endif
             }
         }
+
+        public static string GetEditorSavePath()
+        {
+            return instance != null
+                ? instance.SavePath
+                : null;
+        }
+        
 #if UNITY_EDITOR
         private static ThingTypeSettings Create()
         {
@@ -65,42 +73,19 @@ return null;
             return obj;
         }
 
-
-        public string GetPath2(ThingType tt)
-        {
-            var path = ThingTypeSerializer.FindPath(SavePath, tt.ID);
-            if (string.IsNullOrEmpty(path)) path = GetPath(tt);
-            return path;
-        }
+        
         public string GetPath(ThingType tt)
         {
-            return Path.Combine(SavePath, GetFilename(tt));
-        }
-        
-        public string GetFilename(ThingType tt)
-        {
-            return $"{tt.Name} [{tt.ID}].yml";
-        }
-        
-        public string GetPath(string ttName)
-        {
-            return Path.Combine(SavePath, $"{ttName}");
-        }
-        
-        public string GetPathOrExist(ThingType tt)
-        {
-            string path = GetPath(tt);
-
-            var files = Directory.GetFiles(SavePath, GetFilename(tt), SearchOption.AllDirectories);
-            if (files.Length > 0)
-            {
-                path = files[0];
-                Log.Debug($"Found exist {path}");
-            }
-
+            var path = TTStore.FindPath(tt.ID);
+            if (string.IsNullOrEmpty(path)) path = Path.Combine(SavePath, GetFilename(tt));
             return path;
         }
 
+        private string GetFilename(ThingType tt)
+        {
+            return $"{tt.Name} [{tt.ID}]";
+        }
+        
         public void Save()
         {
             #if UNITY_EDITOR

@@ -3,22 +3,7 @@ using Iterum.DataBlocks;
 
 namespace Iterum.ThingTypes
 {
-    public interface IThingType
-    {
-        int ID { get; set; }
-        
-        string Name { get; set; }
-        string Category { get; set; }
-        string Description { get; set; }
-
-        string[] Flags { get; set; }
-        Dictionary<string, string> Attrs { get; set; }
-        
-        IDataBlock[] DataBlocks { get; set; }
-
-    }
-    
-    public struct ThingType : IThingType
+    public struct ThingType
     {
         public int ID { get; set; }
         public string Name { get; set; }

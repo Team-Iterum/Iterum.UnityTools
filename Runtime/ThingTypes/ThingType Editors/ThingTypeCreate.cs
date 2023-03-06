@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using EasyButtons;
+using Iterum.BaseSystems;
 #if UNITY_EDITOR
 using System.IO;
 using Iterum.Logs;
 using UnityEditor;
 #endif
+using static Iterum.BaseSystems.TTManagerAlias;
 using UnityEngine;
 
 namespace Iterum.ThingTypes
@@ -51,7 +53,9 @@ namespace Iterum.ThingTypes
                 Attrs = attrs
             };
             
-            ThingTypeSerializer.Serialize(settings.GetPath2(tt), tt);
+            ThingTypeLoader.Load();
+            
+            TTSerializer.Serialize(settings.GetPath(tt), tt);
 
             settings.ID += 1;
             
@@ -62,9 +66,11 @@ namespace Iterum.ThingTypes
             ttRef.ID = tt.ID;
             
             gameObject.AddComponent<ThingTypeUpdate>();
-            DestroyImmediate(this);
+            DestroyImmediate(this, true);
 
             settings.Save();
+            
+            ThingTypeLoader.RemoveAll();
             
             Log.Success("ThingTypeCreate", $"Created ThingType {tt.Category}/{tt.Name}");
         }

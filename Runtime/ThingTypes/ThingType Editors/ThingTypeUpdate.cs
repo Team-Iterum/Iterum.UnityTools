@@ -1,7 +1,9 @@
 using EasyButtons;
+using Iterum.BaseSystems;
 using Iterum.DataBlocks;
 using Iterum.Logs;
 using UnityEngine;
+using static Iterum.BaseSystems.TTManagerAlias;
 
 namespace Iterum.ThingTypes
 {
@@ -19,6 +21,8 @@ namespace Iterum.ThingTypes
             settings = ThingTypeSettings.instance;
             var thingTypeRef = self.gameObject.GetComponent<ThingTypeRef>();
 
+            ThingTypeLoader.Load();
+            
             tt = default;
             
             if (settings == null)
@@ -32,13 +36,13 @@ namespace Iterum.ThingTypes
                 return false;
             }
                         
-            tt = ThingTypeSerializer.Find(settings.SavePath, thingTypeRef.ID);
+            tt = TTStore.Find(thingTypeRef.ID);
             if (tt.Name == null)
             {
                 Log.Error("ThingTypeUpdate", $"ThingType '{thingTypeRef.ID}' not found");
                 return false;
             }
-            
+
             return true;
         }
        
@@ -51,7 +55,7 @@ namespace Iterum.ThingTypes
             tt.Name = ThingTypeSettings.ParseName(name).Name;
             tt.Category = ThingTypeSettings.ParseName(name).Category;
 
-            ThingTypeSerializer.Serialize(settings.GetPath2(tt), tt);
+            TTSerializer.Serialize(settings.GetPath(tt), tt);
             
             Log.Success("ThingTypeUpdate", $"Updated (Name, Category) ThingType {tt.Category}/{tt.Name}");
             
@@ -72,7 +76,7 @@ namespace Iterum.ThingTypes
             var list = DataBlockFactory.GetDataBlocks(gameObject, tt.Flags, null);
             tt.DataBlocks = list.ToArray();
             
-            ThingTypeSerializer.Serialize(settings.GetPath2(tt), tt);
+            TTSerializer.Serialize(settings.GetPath(tt), tt);
             
             DataBlockFactory.ClearRegister();
             
@@ -94,7 +98,7 @@ namespace Iterum.ThingTypes
             var list = DataBlockFactory.GetDataBlocks(gameObject, tt.Flags, null);
             tt.DataBlocks = list.ToArray();
             
-            ThingTypeSerializer.Serialize(settings.GetPath2(tt), tt);
+            TTSerializer.Serialize(settings.GetPath(tt), tt);
             
             ShapeMeshData.Skip = false;
             ShapeMeshDataArray.Skip = false;

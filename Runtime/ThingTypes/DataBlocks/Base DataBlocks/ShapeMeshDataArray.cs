@@ -5,6 +5,7 @@ using System.Text;
 using Iterum.DataBlocks;
 using Iterum.ThingTypes;
 using UnityEngine;
+using static Iterum.BaseSystems.TTManagerAlias;
 
 namespace Iterum.DataBlocks
 {
@@ -30,7 +31,7 @@ namespace Iterum.DataBlocks
                 
             }
             
-            var tt = ThingTypeSerializer.Find(settings.SavePath, go.GetComponent<ThingTypeRef>().ID);
+            var tt = TTStore.Find(go.GetComponent<ThingTypeRef>().ID);
             
             string dirPath = Path.Combine(settings.SaveDataPath, "Mesh");
             Directory.CreateDirectory(dirPath);

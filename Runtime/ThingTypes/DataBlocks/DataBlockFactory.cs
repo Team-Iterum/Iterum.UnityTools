@@ -12,7 +12,7 @@ namespace Iterum.ThingTypes
 {
     public static class DataBlockFactory
     {
-        private static readonly Dictionary<string, Func<GameObject, IDataBlock>> factory = new Dictionary<string, Func<GameObject, IDataBlock>>();
+        private static readonly Dictionary<string, Func<GameObject, IDataBlock>> Factory = new();
         
         public static void Register()
         {
@@ -21,7 +21,7 @@ namespace Iterum.ThingTypes
         
         public static void ClearRegister()
         {
-            factory.Clear();
+            Factory.Clear();
         }
 
         private static void RegisterDynamicDataBlocks()
@@ -48,9 +48,9 @@ namespace Iterum.ThingTypes
 
         private static void Add(string attrName, Func<GameObject, IDataBlock> func)
         {
-            if (factory.ContainsKey(attrName)) return;
+            if (Factory.ContainsKey(attrName)) return;
 
-            factory.Add(attrName, func);
+            Factory.Add(attrName, func);
         }
 
         public static List<IDataBlock> GetDataBlocks(GameObject go, IEnumerable<string> ttAttrs, string[] exclude)
@@ -59,7 +59,7 @@ namespace Iterum.ThingTypes
             if (ttAttrs == null) return new List<IDataBlock>();
             foreach (string attr in ttAttrs)
             {
-                if (!factory.ContainsKey(attr)) continue;
+                if (!Factory.ContainsKey(attr)) continue;
                 if (exclude != null && exclude.Contains(attr)) continue;
                 
                 Stopwatch sw = new Stopwatch();
@@ -68,7 +68,7 @@ namespace Iterum.ThingTypes
                     Log.Debug($"Run: {attr}...");
                     
                     sw.Start();
-                    var block = factory[attr].Invoke(go);
+                    var block = Factory[attr].Invoke(go);
                     sw.Stop();
                     
                     Log.Debug($"End: {attr} Time: {sw.Elapsed.TotalSeconds}s");

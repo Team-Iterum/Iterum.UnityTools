@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using UnityEngine;
 
 namespace Iterum.Logs
 {
@@ -47,6 +48,7 @@ namespace Iterum.Logs
         #endregion
         
         // ReSharper disable Unity.PerformanceAnalysis
+        [HideInCallstack]
         private static void Send(Level level, string group, string s, 
             ConsoleColor color = ConsoleColor.White, ConsoleColor groupColor = ConsoleColor.DarkGray, 
             bool timestamp = true)
@@ -88,7 +90,11 @@ namespace Iterum.Logs
                 {
 #if UNITY_2018_3_OR_NEWER
                     logText += GetLevel(level);
+                    #if UNITY_EDITOR
                     finalText += Tagged(GetLevelUnity(level), GetColorLevel(level));
+                    #else
+                    finalText += $"[{level}] ";
+                    #endif
                     
 #else
                     finalText += $"[{level}] ";
@@ -123,7 +129,7 @@ namespace Iterum.Logs
                 
 #if UNITY_2018_3_OR_NEWER 
                 logText += s + Environment.NewLine;
-                if (level != Level.Exception)
+                if (level != Level.Exception && level != Level.Error && level != Level.Fatal)
                     s = Tagged(s, color);
                 finalText += s;
 #else
@@ -136,8 +142,11 @@ namespace Iterum.Logs
 #endif
             }
 
-#if UNITY_2018_3_OR_NEWER   
-            UnityEngine.Debug.Log(finalText);
+#if UNITY_2018_3_OR_NEWER
+            if (level == Level.Exception || level == Level.Error  || level == Level.Fatal)
+                UnityEngine.Debug.LogError(finalText);
+            else
+                UnityEngine.Debug.Log(finalText);
             OnLogCallback(dateTime, level, group, s, logText, color);
 #endif
         }

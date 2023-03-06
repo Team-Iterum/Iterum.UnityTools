@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Iterum.ThingTypes;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using static Iterum.BaseSystems.TTManagerAlias;
 
 namespace Iterum.DataBlocks
 {
@@ -39,9 +38,8 @@ namespace Iterum.DataBlocks
                 rot = Math.Vector3.zero,
             };
             
-            var settings = ThingTypeSettings.instance;
             
-            var thingTypes = ThingTypeSerializer.DeserializeAll(settings.SavePath);
+            var thingTypes = TTStore.ThingTypes;
             
             // Find thingtyprefs
             TraverseChild(root, data.root, root.transform, ref thingTypes);
