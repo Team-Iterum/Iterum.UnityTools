@@ -41,6 +41,15 @@ namespace Iterum.ThingTypes
                             var instance = method?.Invoke(null, new object[] { o });
                             return instance as IDataBlock;
                         });
+                        if (regAttr.FlagKeyword.Contains("Data"))
+                        {
+                            Add(regAttr.FlagKeyword.Replace("Data", ""), o =>
+                            {
+                                var method = type.GetMethod(regAttr.FactoryMethod);
+                                var instance = method?.Invoke(null, new object[] { o });
+                                return instance as IDataBlock;
+                            });
+                        }
                     }
                 }
             }
