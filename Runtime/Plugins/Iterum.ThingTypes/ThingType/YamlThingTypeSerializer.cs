@@ -25,10 +25,10 @@ namespace Iterum.ThingTypes
             var dataBlocks = DataBlockUtils.GetDataBlocksTypes().ToList();
 
             foreach (var (flagKeyword, dataBlock) in dataBlocks)
-                serBuilder.WithTagMapping($"!{flagKeyword}", dataBlock);
+                serBuilder.WithTagMapping($"!{dataBlock.Name}", dataBlock);
 
             foreach (var (flagKeyword, dataBlock) in dataBlocks)
-                deserBuilder.WithTagMapping($"!{flagKeyword}", dataBlock);
+                deserBuilder.WithTagMapping($"!{dataBlock.Name}", dataBlock);
         }
 
         public ThingType Deserialize(string fileName)
