@@ -13,26 +13,26 @@ namespace Iterum.DataBlocks
     public class ShapeMeshDataArray : IDataBlock
     {
         public static bool Skip = false;
-        
+
         public string[] Name;
 
         public static IDataBlock Create(GameObject go)
         {
             var settings = ThingTypeSettings.instance;
-            
+
             var list = new List<string>();
             var meshes = go.GetComponent<MeshArray>().Meshes;
             var meshFilters = new List<MeshFilter>();
-            
-            if(meshes.Length == 0)
+
+            if (meshes.Length == 0)
             {
                 meshFilters = go.GetComponent<MeshArray>().MesheFilters.ToList();
                 meshes = go.GetComponent<MeshArray>().MesheFilters.Select(e => e.sharedMesh).ToArray();
-                
+
             }
-            
+
             var tt = TTStore.Find(go.GetComponent<ThingTypeRef>().ID);
-            
+
             string dirPath = Path.Combine(settings.SaveDataPath, "Mesh");
             Directory.CreateDirectory(dirPath);
 
@@ -41,7 +41,7 @@ namespace Iterum.DataBlocks
                 var mesh = meshes[i];
                 // skip empty
                 if (mesh.vertexCount == 0) continue;
-                
+
                 string name = $"{tt.Name}_Mesh_{i}";
 
                 if (!Skip)
@@ -62,7 +62,7 @@ namespace Iterum.DataBlocks
                     {
                         localScale = meshFilters[i].transform.localScale;
                     }
-                    
+
                     string content = ShapeMeshData.GetMeshContent(mesh, localPos, localScale, rot);
                     File.WriteAllText(Path.Combine(dirPath, $"{name}.txt"),
                         $"{ShapeMeshData.GetHeader(tt)}\n{content}");
@@ -75,6 +75,6 @@ namespace Iterum.DataBlocks
             {
                 Name = list.ToArray()
             };
-        } 
+        }
     }
 }

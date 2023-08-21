@@ -13,26 +13,30 @@ namespace Iterum.Network
     public class TelepathyClient
     {
         private Client client;
-        
+
         public event ReceiveNetworkMessage Received;
         public event Action Connected;
         public event Action Disconnected;
         public bool IsConnected => client.Connected;
 
-        private Stopwatch pingSw;
+        private Stopwatch pingTicks;
+
+        public long LastSentTick { get; private set; }
+        public long ElapsedTicks => pingTicks.ElapsedTicks;
+
         private StopwatchTimer pingTimer;
 
         private Queue<NetworkMessage> queue = new Queue<NetworkMessage>();
-        
+
         public double RTT { get; private set; }
 
         public TelepathyClient()
         {
-            pingSw = new Stopwatch();
-            pingSw.Start();
-            
+            pingTicks = new Stopwatch();
+            pingTicks.Start();
+
             pingTimer = new StopwatchTimer(1f);
-            
+
             // create and connect the client
             var maxMessageSize = 64 * 1024;
             client = new Client(maxMessageSize);
@@ -57,9 +61,9 @@ namespace Iterum.Network
             if (!client.Connected) return;
             if (pingTimer.Check())
             {
-                Send(PingPacket.Static);
-                pingSw.Restart();
-
+                var ticks = ElapsedTicks;
+                Send(new PingPacket { ticks = ticks });
+                LastSentTick = ticks;
             }
         }
 
@@ -99,9 +103,10 @@ namespace Iterum.Network
 
         private bool CheckPing(ArraySegment<byte> msg)
         {
-            if (msg.Count == 2 && msg[0] == 0 && msg[1] == 254)
+            if (msg[0] == 0 && msg[1] == 254)
             {
-                RTT = TimeConvert.TicksToMs(pingSw.ElapsedTicks);
+                var tick = BitConverter.ToInt64(msg.Array, 2);
+                RTT = TimeConvert.TicksToMs(pingTicks.ElapsedTicks - tick);
                 return true;
             }
 
@@ -112,7 +117,7 @@ namespace Iterum.Network
         {
             client.Send(bytes);
         }
-        
+
         public void Send<T>(T packet) where T : struct, ISerializablePacketSegment
         {
             client.Send(packet.Serialize());
@@ -127,7 +132,7 @@ namespace Iterum.Network
 
         private const string LogGroup = "TelepathyClient";
         private string Address { get; set; }
-        
+
     }
 
     public delegate void ReceiveNetworkMessage(ref NetworkMessage msg);

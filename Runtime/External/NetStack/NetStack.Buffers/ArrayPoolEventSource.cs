@@ -23,12 +23,14 @@
 using System;
 
 #if ENABLE_MONO || ENABLE_IL2CPP
-	using UnityEngine;
+using UnityEngine;
 #endif
 
-namespace NetStack.Buffers {
-	internal sealed class ArrayPoolEventSource {
-		#if NETSTACK_BUFFERS_LOG
+namespace NetStack.Buffers
+{
+    internal sealed class ArrayPoolEventSource
+    {
+#if NETSTACK_BUFFERS_LOG
 			internal static readonly ArrayPoolEventSource EventLog = new ArrayPoolEventSource();
 
 			internal enum BufferAllocatedReason : int {
@@ -53,30 +55,34 @@ namespace NetStack.Buffers {
 			internal void BufferReturned(int bufferId, int bufferSize, int poolId) {
 				Log.Info("Buffers", "Buffer returned (Buffer ID: " + bufferId + ", Buffer size: " + bufferSize + ", Pool ID: " + poolId + ")");
 			}
-		#endif
-	}
+#endif
+    }
 
-	internal static class Log {
-		private static string Output(string module, string message) {
-			return DateTime.Now.ToString("[HH:mm:ss]") + " [NetStack." + module + "] " + message;
-		}
+    internal static class Log
+    {
+        private static string Output(string module, string message)
+        {
+            return DateTime.Now.ToString("[HH:mm:ss]") + " [NetStack." + module + "] " + message;
+        }
 
-		public static void Info(string module, string message) {
-			#if ENABLE_MONO || ENABLE_IL2CPP
-				Debug.Log(Output(module, message));
-			#else
+        public static void Info(string module, string message)
+        {
+#if ENABLE_MONO || ENABLE_IL2CPP
+            Debug.Log(Output(module, message));
+#else
 				Console.WriteLine(Output(module, message));
-			#endif
-		}
+#endif
+        }
 
-		public static void Warning(string module, string message) {
-			#if ENABLE_MONO || ENABLE_IL2CPP
-				Debug.LogWarning(Output(module, message));
-			#else
+        public static void Warning(string module, string message)
+        {
+#if ENABLE_MONO || ENABLE_IL2CPP
+            Debug.LogWarning(Output(module, message));
+#else
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.WriteLine(Output(module, message));
 				Console.ResetColor();
-			#endif
-		}
-	}
+#endif
+        }
+    }
 }

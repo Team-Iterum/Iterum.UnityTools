@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,7 +8,7 @@ namespace Iterum.ThingTypes
 {
     public static class DataBlockUtils
     {
-        public static IEnumerable<(string flagKeyword, Type dataBlock)> GetDataBlocksTypes() 
+        public static IEnumerable<(string flagKeyword, Type dataBlock)> GetDataBlocksTypes()
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -23,7 +23,7 @@ namespace Iterum.ThingTypes
                     {
                         yield return (type.Name, type);
                     };
-                    
+
                     if (attr is AutoRegisterDataBlock regAttr)
                     {
                         yield return (regAttr.FlagKeyword, type);

@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 namespace EasyButtons.Editor
 {
     using System.Reflection;
@@ -12,7 +12,7 @@ namespace EasyButtons.Editor
 
         protected override void DrawInternal(IEnumerable<object> targets)
         {
-            if ( ! GUILayout.Button(DisplayName))
+            if (!GUILayout.Button(DisplayName))
                 return;
 
             foreach (object obj in targets)

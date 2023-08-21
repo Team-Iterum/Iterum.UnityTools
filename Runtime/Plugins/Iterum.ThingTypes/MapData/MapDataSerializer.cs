@@ -10,13 +10,13 @@ namespace Iterum.ThingTypes
         {
             var builder = new DeserializerBuilder();
 
-            var serializer =  builder.Build();
-            
+            var serializer = builder.Build();
+
             var mapData = serializer.Deserialize<MapData>(File.ReadAllText(mapName));
 
             return mapData;
         }
-        
+
         public static void Serialize(string fileName, MapData mapData, bool overwrite = true)
         {
             var builder = new SerializerBuilder();
@@ -25,19 +25,19 @@ namespace Iterum.ThingTypes
             builder.WithEventEmitter(e => new FlowIntSequences(e));
 
             var serializer = builder.Build();
-            
+
             if (File.Exists(fileName))
             {
-                if(overwrite) File.Delete(fileName);
+                if (overwrite) File.Delete(fileName);
             }
 
             using StreamWriter w = File.AppendText(fileName);
-            
+
             w.Write($"---\n" +
                     $"# MapData {mapData.Name}\n" +
                     $"# Created: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\n" +
                     $"\n");
-                
+
             serializer.Serialize(w, mapData);
         }
     }

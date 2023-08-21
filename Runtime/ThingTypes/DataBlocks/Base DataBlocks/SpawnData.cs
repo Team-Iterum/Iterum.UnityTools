@@ -12,11 +12,12 @@ namespace Iterum.DataBlocks
         public float[] Position;
         public float RadiusX;
         public float RadiusY;
-        
+
         public static IDataBlock Create(GameObject go)
         {
-            
-            var spawnData = new SpawnData() {
+
+            var spawnData = new SpawnData()
+            {
                 Position = (Math.Vector3)go.transform.position,
                 RadiusX = 0,
                 RadiusY = 0,
@@ -30,6 +31,6 @@ namespace Iterum.DataBlocks
 
             return spawnData;
         }
-        
+
     }
 }

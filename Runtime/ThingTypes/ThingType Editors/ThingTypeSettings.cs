@@ -7,11 +7,11 @@ using static Iterum.BaseSystems.TTManagerAlias;
 
 namespace Iterum.ThingTypes
 {
-    
+
     public class ThingTypeSettings : ScriptableObject
     {
         private const string DefaultCategoryName = "Default";
-        
+
         public string SavePath = "../Shared/ThingTypes";
         public string SaveDataPath = "../Shared/ThingData";
         public int ID = 1;
@@ -24,12 +24,12 @@ namespace Iterum.ThingTypes
             get
             {
 #if UNITY_EDITOR
-                if (privateInstance == null) 
+                if (privateInstance == null)
                     privateInstance = AssetDatabase.LoadAssetAtPath<ThingTypeSettings>(GetFilePath());
-                
-                if(privateInstance == null)
+
+                if (privateInstance == null)
                     privateInstance = Create();
-                
+
                 return privateInstance;
 #else
 return null;
@@ -43,7 +43,7 @@ return null;
                 ? instance.SavePath
                 : null;
         }
-        
+
 #if UNITY_EDITOR
         private static ThingTypeSettings Create()
         {
@@ -56,7 +56,7 @@ return null;
 
         public static NameCategory ParseName(string ttName)
         {
-            var nameCategory = ttName.Split(new [] { " // ", "//", "/", " / "  }, StringSplitOptions.RemoveEmptyEntries);
+            var nameCategory = ttName.Split(new[] { " // ", "//", "/", " / " }, StringSplitOptions.RemoveEmptyEntries);
 
             NameCategory obj = default;
             if (nameCategory.Length == 1)
@@ -73,7 +73,7 @@ return null;
             return obj;
         }
 
-        
+
         public string GetPath(ThingType tt)
         {
             var path = TTStore.FindPath(tt.ID);
@@ -85,14 +85,14 @@ return null;
         {
             return $"{tt.Name} [{tt.ID}]";
         }
-        
+
         public void Save()
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             EditorUtility.SetDirty(instance);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            #endif
+#endif
         }
     }
 

@@ -860,7 +860,7 @@ namespace Iterum.Math
         }
 
 
-        public static implicit  operator Quaternion(UnityEngine.Quaternion p)  // explicit byte to digit conversion operator
+        public static implicit operator Quaternion(UnityEngine.Quaternion p)  // explicit byte to digit conversion operator
         {
             Quaternion vec = new Quaternion(p.x, p.y, p.z, p.w);
 

@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 namespace EasyButtons.Editor
 {
     using UnityEditor;

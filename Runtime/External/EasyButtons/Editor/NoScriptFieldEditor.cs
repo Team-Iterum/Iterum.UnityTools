@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 namespace EasyButtons.Editor
 {
     using System;
@@ -34,7 +34,7 @@ namespace EasyButtons.Editor
 
         public void ApplyModifiedProperties()
         {
-            if ( ! serializedObject.hasModifiedProperties)
+            if (!serializedObject.hasModifiedProperties)
                 return;
 
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
@@ -44,7 +44,7 @@ namespace EasyButtons.Editor
         private static void RemoveNoScriptWarning()
         {
             // The warning doesn't appear in edit mode.
-            if ( ! Application.isPlaying)
+            if (!Application.isPlaying)
                 return;
 
             // The "No Script asset for ..." log has a unique identifier that can be used to remove the warning.

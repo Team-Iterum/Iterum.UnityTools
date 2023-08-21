@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -12,7 +12,7 @@ namespace Telepathy
     //    while attempting to use it for a new connection attempt etc.
     // => creating a fresh client state each time is the best solution against
     //    data races here!
-    class ClientConnectionState : ConnectionState
+    internal class ClientConnectionState : ConnectionState
     {
         public Thread receiveThread;
 
@@ -103,7 +103,7 @@ namespace Telepathy
         // all client state wrapped into an object that is passed to ReceiveThread
         // => we create a new one each time we connect to avoid data races with
         //    old dieing threads still using the previous object!
-        ClientConnectionState state;
+        private ClientConnectionState state;
 
         // Connected & Connecting
         public bool Connected => state != null && state.Connected;
@@ -113,14 +113,14 @@ namespace Telepathy
         public int ReceivePipeCount => state != null ? state.receivePipe.TotalCount : 0;
 
         // constructor
-        public Client(int MaxMessageSize) : base(MaxMessageSize) {}
+        public Client(int MaxMessageSize) : base(MaxMessageSize) { }
 
         // the thread function
         // STATIC to avoid sharing state!
         // => pass ClientState object. a new one is created for each new thread!
         // => avoids data races where an old dieing thread might still modify
         //    the current thread's state :/
-        static void ReceiveThreadFunction(ClientConnectionState state, string ip, int port, int MaxMessageSize, bool NoDelay, int SendTimeout, int ReceiveTimeout, int ReceiveQueueLimit)
+        private static void ReceiveThreadFunction(ClientConnectionState state, string ip, int port, int MaxMessageSize, bool NoDelay, int SendTimeout, int ReceiveTimeout, int ReceiveQueueLimit)
 
         {
             Thread sendThread = null;
@@ -176,7 +176,7 @@ namespace Telepathy
             // add 'Disconnected' event to receive pipe so that the caller
             // knows that the Connect failed. otherwise they will never know
             state.receivePipe.Enqueue(0, EventType.Disconnected, default);
-            
+
             // sendthread might be waiting on ManualResetEvent,
             // so let's make sure to end it if the connection
             // closed.
@@ -235,7 +235,8 @@ namespace Telepathy
             //    too long, which is especially good in games
             // -> this way we don't async client.BeginConnect, which seems to
             //    fail sometimes if we connect too many clients too fast
-            state.receiveThread = new Thread(() => {
+            state.receiveThread = new Thread(() =>
+            {
                 ReceiveThreadFunction(state, ip, port, MaxMessageSize, NoDelay, SendTimeout, ReceiveTimeout, ReceiveQueueLimit);
             });
             state.receiveThread.IsBackground = true;

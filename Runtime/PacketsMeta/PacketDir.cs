@@ -1,4 +1,4 @@
-﻿namespace Iterum.Packets
+namespace Iterum.Packets
 {
 
     public enum PacketDir

@@ -1,5 +1,5 @@
+using EasyButtons;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Iterum.ThingTypes
 {
@@ -15,5 +15,19 @@ namespace Iterum.ThingTypes
         }
 
         public void UpdateId(int id) => Id = id;
+
+#if UNITY_EDITOR
+
+        [Button("Update Name & Category", Mode = ButtonMode.DisabledInPlayMode)]
+        public void UpdateNameCategory() => ThingTypeUpdates.UpdateNameCategory(this);
+
+        [Button("Update Data Blocks", Mode = ButtonMode.DisabledInPlayMode)]
+        public void UpdateDataBlocks() => ThingTypeUpdates.UpdateDataBlocks(this);
+
+        [Button("Update DataBlocks (no mesh)", Mode = ButtonMode.DisabledInPlayMode)]
+        public void UpdateDataBlocksNoMesh() => ThingTypeUpdates.UpdateDataBlocksNoMesh(this);
+#endif
+
+
     }
 }

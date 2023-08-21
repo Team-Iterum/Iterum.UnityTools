@@ -1,4 +1,4 @@
-﻿using Iterum.ThingTypes;
+using Iterum.ThingTypes;
 
 namespace Iterum.BaseSystems
 {
@@ -6,12 +6,12 @@ namespace Iterum.BaseSystems
     {
         public static ThingTypeStore TTStore { get; private set; }
         public static IThingTypeSerializer TTSerializer { get; private set; }
-        
+
         public static void Set(IThingTypeSerializer serializer)
         {
             TTSerializer = serializer;
         }
-        
+
         public static void Set(ThingTypeStore store)
         {
             TTStore = store;
@@ -20,11 +20,11 @@ namespace Iterum.BaseSystems
         public static ThingTypeStore LoadStore(string editorPath, string runtimePath)
         {
             string path = null;
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             path = editorPath;
-            #else
+#else
             path = runtimePath;
-            #endif
+#endif
             var store = TTSerializer.DeserializeAll(path);
             return store;
         }

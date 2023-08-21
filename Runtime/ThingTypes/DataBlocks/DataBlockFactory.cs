@@ -13,12 +13,12 @@ namespace Iterum.ThingTypes
     public static class DataBlockFactory
     {
         private static readonly Dictionary<string, Func<GameObject, IDataBlock>> Factory = new();
-        
+
         public static void Register()
         {
             RegisterDynamicDataBlocks();
         }
-        
+
         public static void ClearRegister()
         {
             Factory.Clear();
@@ -32,13 +32,13 @@ namespace Iterum.ThingTypes
                 {
                     var attr = type.GetCustomAttribute(typeof(AutoRegisterDataBlock), true);
                     if (attr == null || !type.GetInterfaces().Contains(typeof(IDataBlock))) continue;
-                    
+
                     if (attr is AutoRegisterDataBlock regAttr)
                     {
                         Add(regAttr.FlagKeyword, o =>
                         {
                             var method = type.GetMethod(regAttr.FactoryMethod);
-                            var instance = method?.Invoke(null, new object[] {o});
+                            var instance = method?.Invoke(null, new object[] { o });
                             return instance as IDataBlock;
                         });
                     }
@@ -61,21 +61,21 @@ namespace Iterum.ThingTypes
             {
                 if (!Factory.ContainsKey(attr)) continue;
                 if (exclude != null && exclude.Contains(attr)) continue;
-                
+
                 Stopwatch sw = new Stopwatch();
                 try
                 {
                     Log.Debug($"Run: {attr}...");
-                    
+
                     sw.Start();
                     var block = Factory[attr].Invoke(go);
                     sw.Stop();
-                    
+
                     Log.Debug($"End: {attr} Time: {sw.Elapsed.TotalSeconds}s");
-                    
+
                     dataBlocks.Add(block);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.LogError(ex);
                 }

@@ -14,12 +14,12 @@ namespace Iterum.ThingTypes
         public Dictionary<string, string> Attrs { get; set; }
 
         public IDataBlock[] DataBlocks { get; set; }
-        
+
         public override string ToString()
         {
             return $"ThingType {Category}/{Name}";
         }
 
     }
-    
+
 }

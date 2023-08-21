@@ -11,13 +11,13 @@ namespace Iterum.DataBlocks
     public class ShapeSphereData : IDataBlock
     {
         public float Radius;
-        
+
         public static IDataBlock Create(GameObject go)
         {
-            if (!go.GetComponent<SphereCollider>()) 
+            if (!go.GetComponent<SphereCollider>())
                 throw new Exception("Factory ShapeSphereData: Sphere collider not found");
 
-            ShapeSphereData data = new ShapeSphereData {Radius = go.GetComponent<SphereCollider>().radius};
+            ShapeSphereData data = new ShapeSphereData { Radius = go.GetComponent<SphereCollider>().radius };
             return data;
         }
 

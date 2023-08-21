@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Iterum.BaseSystems.Utility;
 using Iterum.Logs;
 using Iterum.ThingTypes;

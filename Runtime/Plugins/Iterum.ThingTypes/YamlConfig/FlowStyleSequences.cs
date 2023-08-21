@@ -9,7 +9,7 @@ namespace Iterum.ThingTypes
     public class FlowFloatSequences : ChainedEventEmitter
     {
         public FlowFloatSequences(IEventEmitter nextEmitter)
-            : base(nextEmitter) {}
+            : base(nextEmitter) { }
 
         public override void Emit(SequenceStartEventInfo eventInfo, IEmitter emitter)
         {
@@ -24,11 +24,11 @@ namespace Iterum.ThingTypes
             nextEmitter.Emit(eventInfo, emitter);
         }
     }
-    
+
     public class FlowIntSequences : ChainedEventEmitter
     {
         public FlowIntSequences(IEventEmitter nextEmitter)
-            : base(nextEmitter) {}
+            : base(nextEmitter) { }
 
         public override void Emit(SequenceStartEventInfo eventInfo, IEmitter emitter)
         {
@@ -43,5 +43,5 @@ namespace Iterum.ThingTypes
             nextEmitter.Emit(eventInfo, emitter);
         }
     }
-    
+
 }

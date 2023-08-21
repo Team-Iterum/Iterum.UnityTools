@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
@@ -17,7 +17,7 @@ namespace Telepathy
 
         // listener
         public TcpListener listener;
-        Thread listenerThread;
+        private Thread listenerThread;
 
         // disconnect if send queue gets too big.
         // -> avoids ever growing queue memory if network is slower than input
@@ -41,10 +41,10 @@ namespace Telepathy
         public int ReceivePipeTotalCount => receivePipe.TotalCount;
 
         // clients with <connectionId, ConnectionState>
-        readonly ConcurrentDictionary<int, ConnectionState> clients = new ConcurrentDictionary<int, ConnectionState>();
+        private readonly ConcurrentDictionary<int, ConnectionState> clients = new ConcurrentDictionary<int, ConnectionState>();
 
         // connectionId counter
-        int counter;
+        private int counter;
 
         // public next id function in case someone needs to reserve an id
         // (e.g. if hostMode should always have 0 connection and external
@@ -71,12 +71,12 @@ namespace Telepathy
         public bool Active => listenerThread != null && listenerThread.IsAlive;
 
         // constructor
-        public Server(int MaxMessageSize) : base(MaxMessageSize) {}
+        public Server(int MaxMessageSize) : base(MaxMessageSize) { }
 
         // the listener thread's listen function
         // note: no maxConnections parameter. high level API should handle that.
         //       (Transport can't send a 'too full' message anyway)
-        void Listen(int port)
+        private void Listen(int port)
         {
             // absolutely must wrap with try/catch, otherwise thread
             // exceptions are silent
@@ -248,7 +248,7 @@ namespace Telepathy
                 TcpClient client = kvp.Value.client;
                 // close the stream if not closed yet. it may have been closed
                 // by a disconnect already, so use try/catch
-                try { client.GetStream().Close(); } catch {}
+                try { client.GetStream().Close(); } catch { }
                 client.Close();
             }
 

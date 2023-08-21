@@ -1,4 +1,4 @@
-﻿/*
+/*
  *  Copyright (c) 2018 Stanislav Denisov
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,47 +23,59 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace NetStack.Unsafe {
-	#if NET_4_6 || NET_STANDARD_2_0
-		public static class Memory {
-			#if NETSTACK_INLINING
+namespace NetStack.Unsafe
+{
+#if NET_4_6 || NET_STANDARD_2_0
+    public static class Memory
+    {
+#if NETSTACK_INLINING
 				[MethodImpl(256)]
-			#endif
-			public static unsafe void Copy(IntPtr source, int sourceOffset, byte[] destination, int destinationOffset, int length) {
-				if (length > 0) {
-					fixed (byte* destinationPointer = &destination[destinationOffset]) {
-						byte* sourcePointer = (byte*)source + sourceOffset;
+#endif
+        public static unsafe void Copy(IntPtr source, int sourceOffset, byte[] destination, int destinationOffset, int length)
+        {
+            if (length > 0)
+            {
+                fixed (byte* destinationPointer = &destination[destinationOffset])
+                {
+                    byte* sourcePointer = (byte*)source + sourceOffset;
 
-						Buffer.MemoryCopy(sourcePointer, destinationPointer, length, length);
-					}
-				}
-			}
+                    Buffer.MemoryCopy(sourcePointer, destinationPointer, length, length);
+                }
+            }
+        }
 
-			#if NETSTACK_INLINING
+#if NETSTACK_INLINING
 				[MethodImpl(256)]
-			#endif
-			public static unsafe void Copy(byte[] source, int sourceOffset, IntPtr destination, int destinationOffset, int length) {
-				if (length > 0) {
-					fixed (byte* sourcePointer = &source[sourceOffset]) {
-						byte* destinationPointer = (byte*)destination + destinationOffset;
+#endif
+        public static unsafe void Copy(byte[] source, int sourceOffset, IntPtr destination, int destinationOffset, int length)
+        {
+            if (length > 0)
+            {
+                fixed (byte* sourcePointer = &source[sourceOffset])
+                {
+                    byte* destinationPointer = (byte*)destination + destinationOffset;
 
-						Buffer.MemoryCopy(sourcePointer, destinationPointer, length, length);
-					}
-				}
-			}
+                    Buffer.MemoryCopy(sourcePointer, destinationPointer, length, length);
+                }
+            }
+        }
 
-			#if NETSTACK_INLINING
+#if NETSTACK_INLINING
 				[MethodImpl(256)]
-			#endif
-			public static unsafe void Copy(byte[] source, int sourceOffset, byte[] destination, int destinationOffset, int length) {
-				if (length > 0) {
-					fixed (byte* sourcePointer = &source[sourceOffset]) {
-						fixed (byte* destinationPointer = &destination[destinationOffset]) {
-							Buffer.MemoryCopy(sourcePointer, destinationPointer, length, length);
-						}
-					}
-				}
-			}
-		}
-	#endif
+#endif
+        public static unsafe void Copy(byte[] source, int sourceOffset, byte[] destination, int destinationOffset, int length)
+        {
+            if (length > 0)
+            {
+                fixed (byte* sourcePointer = &source[sourceOffset])
+                {
+                    fixed (byte* destinationPointer = &destination[destinationOffset])
+                    {
+                        Buffer.MemoryCopy(sourcePointer, destinationPointer, length, length);
+                    }
+                }
+            }
+        }
+    }
+#endif
 }

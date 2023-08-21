@@ -16,14 +16,14 @@ namespace Iterum.DataBlocks
 
         public static IDataBlock Create(GameObject go)
         {
-            if (!go.GetComponent<CapsuleCollider>()) 
+            if (!go.GetComponent<CapsuleCollider>())
                 throw new Exception("Factory ShapeCapsuleData: CapsuleCollider not found");
 
             var capsuleCollider = go.GetComponent<CapsuleCollider>();
 
-            ShapeCapsuleData data = new ShapeCapsuleData 
+            ShapeCapsuleData data = new ShapeCapsuleData
             {
-                Height = capsuleCollider.height, 
+                Height = capsuleCollider.height,
                 Radius = capsuleCollider.radius
             };
 

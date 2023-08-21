@@ -11,8 +11,8 @@ namespace Iterum.ThingTypes
     [ExecuteInEditMode]
     public class MapDataSettings : MonoBehaviour
     {
-        public Dictionary<string, string> MapDataAttrs; 
-        
+        public Dictionary<string, string> MapDataAttrs;
+
         public string SavePath = "Things/Maps";
 
         [Multiline]
@@ -39,7 +39,7 @@ namespace Iterum.ThingTypes
         public void CreateUpdate()
         {
             MapData md;
-            
+
             if (!File.Exists(GetPath(MapName)))
             {
                 md = new MapData
@@ -53,44 +53,44 @@ namespace Iterum.ThingTypes
             {
                 md = MapDataSerializer.Deserialize(GetPath(MapName));
             }
-            
+
             var settings = ThingTypeSettings.instance;
             var refs = FindObjectsOfType<ThingTypeRef>();
-            
+
             var exclude = ExcludeCategory
                             .Replace("\r", "")
                             .Replace("\n", "")
-                            .Split(' ');;
+                            .Split(' '); ;
 
-            
-            
+
+
             md.Refs = refs
                 // exclude categories
                 .Where(ttr => !exclude.Contains(TTStore.Find(ttr.ID).Category))
                 .Select(ttRef => new MapRef
-            {
-                ID = ttRef.ID,
-                name = ttRef.gameObject.name,
-                tag = ttRef.GetComponent<ThingTypeMapRef>()  ?  ttRef.GetComponent<ThingTypeMapRef>().Tag : null,
-                position = (Math.Vector3)ttRef.transform.position,
-                rotation = (Math.Vector3)ttRef.transform.eulerAngles,
+                {
+                    ID = ttRef.ID,
+                    name = ttRef.gameObject.name,
+                    tag = ttRef.GetComponent<ThingTypeMapRef>() ? ttRef.GetComponent<ThingTypeMapRef>().Tag : null,
+                    position = (Math.Vector3)ttRef.transform.position,
+                    rotation = (Math.Vector3)ttRef.transform.eulerAngles,
 
-            }).ToArray();
-            
+                }).ToArray();
+
             if (MapDataAttrs != null)
             {
                 foreach (var attr in MapDataAttrs)
                 {
                     if (!md.Attrs.ContainsKey(attr.Key))
                         md.Attrs.Add(attr.Key, attr.Value);
-                    
+
                     md.Attrs[attr.Key] = attr.Value;
                 }
             }
-            
+
             MapDataSerializer.Serialize(GetPath(md.Name), md);
-            
-            
+
+
             Log.Success("MapDataSettings", $"Updated MapData {md.Name} RefsCount: {md.Refs.Length}");
         }
 
@@ -98,7 +98,7 @@ namespace Iterum.ThingTypes
         {
             return Path.Combine(SavePath, $"{mName}.yml");
         }
-        
+
 
 #endif
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Iterum.Network
 {
@@ -10,6 +10,6 @@ namespace Iterum.Network
     public interface ISerializablePacketSegment
     {
         ArraySegment<byte> Serialize();
-        void Deserialize(ArraySegment<byte> packet);    
+        void Deserialize(ArraySegment<byte> packet);
     }
 }

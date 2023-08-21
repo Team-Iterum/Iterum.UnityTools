@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using UnityEngine;
 using YamlDotNet.Serialization;
@@ -530,7 +530,7 @@ namespace Iterum.Math
             return Mathf.Acos(Mathf.Clamp(Vector3.Dot(from.normalized, to.normalized), -1f, 1f));
         }
 
-        public static implicit  operator Vector3(UnityEngine.Vector3 p)  // explicit byte to digit conversion operator
+        public static implicit operator Vector3(UnityEngine.Vector3 p)  // explicit byte to digit conversion operator
         {
             Vector3 vec = new Vector3(p.x, p.y, p.z);
 
@@ -542,16 +542,16 @@ namespace Iterum.Math
             UnityEngine.Vector3 vec = new UnityEngine.Vector3(p.x, p.y, p.z);
             return vec;
         }
-        
+
         public static implicit operator float[](Vector3 p)  // explicit byte to digit conversion operator
         {
-            
-            return new []{p.x, p.y, p.z};
+
+            return new[] { p.x, p.y, p.z };
         }
-        
+
         public static implicit operator Vector3(float[] p)  // explicit byte to digit conversion operator
         {
-            
+
             return new Vector3(p[0], p[1], p[2]);
         }
     }

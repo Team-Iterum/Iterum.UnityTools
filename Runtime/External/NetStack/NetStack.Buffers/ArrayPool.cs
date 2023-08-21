@@ -23,51 +23,58 @@
 using System.Threading;
 using System.Runtime.CompilerServices;
 
-namespace NetStack.Buffers {
-	public abstract class ArrayPool<T> {
-		#if NET_4_6 || NET_STANDARD_2_0
-			private static ArrayPool<T> s_sharedInstance = null;
-		#else
+namespace NetStack.Buffers
+{
+    public abstract class ArrayPool<T>
+    {
+#if NET_4_6 || NET_STANDARD_2_0
+        private static ArrayPool<T> s_sharedInstance = null;
+#else
 			private static volatile ArrayPool<T> s_sharedInstance = null;
-		#endif
+#endif
 
-		public static ArrayPool<T> Shared {
-			#if NET_4_6 || NET_STANDARD_2_0
-				#if NETSTACK_INLINING
+        public static ArrayPool<T> Shared
+        {
+#if NET_4_6 || NET_STANDARD_2_0
+#if NETSTACK_INLINING
 					[MethodImpl(256)]
-				#endif
-				get {
-					return Volatile.Read(ref s_sharedInstance) ?? EnsureSharedCreated();
-				}
-			#else
-				#if NETSTACK_INLINING
+#endif
+            get
+            {
+                return Volatile.Read(ref s_sharedInstance) ?? EnsureSharedCreated();
+            }
+#else
+#if NETSTACK_INLINING
 					[MethodImpl(256)]
-				#endif
+#endif
 				get {
 					return s_sharedInstance ?? EnsureSharedCreated();
 				}
-			#endif
-		}
+#endif
+        }
 
-		#pragma warning disable 420
+#pragma warning disable 420
 
-		[MethodImpl(MethodImplOptions.NoInlining)]
-		private static ArrayPool<T> EnsureSharedCreated() {
-			Interlocked.CompareExchange(ref s_sharedInstance, Create(), null);
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ArrayPool<T> EnsureSharedCreated()
+        {
+            Interlocked.CompareExchange(ref s_sharedInstance, Create(), null);
 
-			return s_sharedInstance;
-		}
+            return s_sharedInstance;
+        }
 
-		public static ArrayPool<T> Create() {
-			return new DefaultArrayPool<T>();
-		}
+        public static ArrayPool<T> Create()
+        {
+            return new DefaultArrayPool<T>();
+        }
 
-		public static ArrayPool<T> Create(int maxArrayLength, int maxArraysPerBucket) {
-			return new DefaultArrayPool<T>(maxArrayLength, maxArraysPerBucket);
-		}
+        public static ArrayPool<T> Create(int maxArrayLength, int maxArraysPerBucket)
+        {
+            return new DefaultArrayPool<T>(maxArrayLength, maxArraysPerBucket);
+        }
 
-		public abstract T[] Rent(int minimumLength);
+        public abstract T[] Rent(int minimumLength);
 
-		public abstract void Return(T[] array, bool clearArray = false);
-	}
+        public abstract void Return(T[] array, bool clearArray = false);
+    }
 }

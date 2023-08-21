@@ -24,65 +24,74 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 #if ENABLE_MONO || ENABLE_IL2CPP
-	using UnityEngine.Assertions;
+using UnityEngine.Assertions;
 #endif
 
-namespace NetStack.Buffers {
-	internal static class Utilities {
-		#if NETSTACK_INLINING
+namespace NetStack.Buffers
+{
+    internal static class Utilities
+    {
+#if NETSTACK_INLINING
 			[MethodImpl(256)]
-		#endif
-		internal static int SelectBucketIndex(int bufferSize) {
-			#if ENABLE_MONO || ENABLE_IL2CPP
-				Assert.IsTrue(bufferSize > 0);
-			#else
+#endif
+        internal static int SelectBucketIndex(int bufferSize)
+        {
+#if ENABLE_MONO || ENABLE_IL2CPP
+            Assert.IsTrue(bufferSize > 0);
+#else
 				Debug.Assert(bufferSize > 0);
-			#endif
+#endif
 
-			uint bitsRemaining = ((uint)bufferSize - 1) >> 4;
-			int poolIndex = 0;
+            uint bitsRemaining = ((uint)bufferSize - 1) >> 4;
+            int poolIndex = 0;
 
-			if (bitsRemaining > 0xFFFF) {
-				bitsRemaining >>= 16;
-				poolIndex = 16;
-			}
+            if (bitsRemaining > 0xFFFF)
+            {
+                bitsRemaining >>= 16;
+                poolIndex = 16;
+            }
 
-			if (bitsRemaining > 0xFF) {
-				bitsRemaining >>= 8;
-				poolIndex += 8;
-			}
+            if (bitsRemaining > 0xFF)
+            {
+                bitsRemaining >>= 8;
+                poolIndex += 8;
+            }
 
-			if (bitsRemaining > 0xF) {
-				bitsRemaining >>= 4;
-				poolIndex += 4;
-			}
+            if (bitsRemaining > 0xF)
+            {
+                bitsRemaining >>= 4;
+                poolIndex += 4;
+            }
 
-			if (bitsRemaining > 0x3) {
-				bitsRemaining >>= 2;
-				poolIndex += 2;
-			}
+            if (bitsRemaining > 0x3)
+            {
+                bitsRemaining >>= 2;
+                poolIndex += 2;
+            }
 
-			if (bitsRemaining > 0x1) {
-				bitsRemaining >>= 1;
-				poolIndex += 1;
-			}
+            if (bitsRemaining > 0x1)
+            {
+                bitsRemaining >>= 1;
+                poolIndex += 1;
+            }
 
-			return poolIndex + (int)bitsRemaining;
-		}
+            return poolIndex + (int)bitsRemaining;
+        }
 
-		#if NETSTACK_INLINING
+#if NETSTACK_INLINING
 			[MethodImpl(256)]
-		#endif
-		internal static int GetMaxSizeForBucket(int binIndex) {
-			int maxSize = 16 << binIndex;
+#endif
+        internal static int GetMaxSizeForBucket(int binIndex)
+        {
+            int maxSize = 16 << binIndex;
 
-			#if ENABLE_MONO || ENABLE_IL2CPP
-				Assert.IsTrue(maxSize >= 0);
-			#else
+#if ENABLE_MONO || ENABLE_IL2CPP
+            Assert.IsTrue(maxSize >= 0);
+#else
 				Debug.Assert(maxSize >= 0);
-			#endif
+#endif
 
-			return maxSize;
-		}
-	}
+            return maxSize;
+        }
+    }
 }

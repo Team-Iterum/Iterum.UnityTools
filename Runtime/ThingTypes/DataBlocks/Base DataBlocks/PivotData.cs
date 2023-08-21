@@ -17,26 +17,26 @@ namespace Iterum.DataBlocks
         }
 
         public Pivot[] Pivots;
-        
+
         public static IDataBlock Create(GameObject go)
         {
-            
+
             var pivotData = new PivotData();
 
             var pivots = go.GetComponentsInChildren<Transform>(true)
                 .Where(e => e.name.Contains("Pivot"))
-                .Select(e=> 
+                .Select(e =>
                     new PivotData.Pivot
                     {
                         Position = (Math.Vector3)e.transform.localPosition,
                         Name = e.name
                     }
                 ).ToArray();
-            
+
             pivotData.Pivots = pivots;
 
             return pivotData;
         }
-        
+
     }
 }

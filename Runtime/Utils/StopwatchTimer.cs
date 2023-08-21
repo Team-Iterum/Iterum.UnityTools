@@ -6,7 +6,7 @@ namespace Iterum.Utils
     {
         private Stopwatch watch;
         private long last;
-        
+
         private bool AutoReset { get; }
         public float Interval { get; }
         public int Count { get; private set; }
@@ -25,14 +25,14 @@ namespace Iterum.Utils
             long elapsed = watch.ElapsedTicks;
             Elapsed += TimeConvert.TicksToSeconds(elapsed - last);
             last = elapsed;
-            
-            if (Elapsed >= Interval * (Count+1))
+
+            if (Elapsed >= Interval * (Count + 1))
             {
                 Count += 1;
-                if(AutoReset) Reset();
+                if (AutoReset) Reset();
                 return true;
             }
-            
+
             return false;
         }
 

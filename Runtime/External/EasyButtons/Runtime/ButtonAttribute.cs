@@ -1,4 +1,4 @@
-﻿namespace EasyButtons
+namespace EasyButtons
 {
     using System;
     using JetBrains.Annotations;

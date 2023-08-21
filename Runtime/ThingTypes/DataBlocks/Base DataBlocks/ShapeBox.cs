@@ -11,14 +11,14 @@ namespace Iterum.DataBlocks
     public class ShapeBoxData : IDataBlock
     {
         public float[] HalfSize;
-        
+
         public static IDataBlock Create(GameObject go)
         {
             var meshRenderer = go.GetComponent<MeshRenderer>();
             if (meshRenderer == null)
                 meshRenderer = go.GetComponentInChildren<MeshRenderer>();
-            
-            if (!meshRenderer) 
+
+            if (!meshRenderer)
                 throw new Exception("Factory ShapeBoxData: MeshRenderer not found");
 
             var bounds = meshRenderer.bounds;
@@ -28,6 +28,6 @@ namespace Iterum.DataBlocks
             };
             return data;
         }
-        
+
     }
 }

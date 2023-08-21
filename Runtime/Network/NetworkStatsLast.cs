@@ -1,4 +1,4 @@
-﻿namespace Iterum.BaseSystems
+namespace Iterum.BaseSystems
 {
     public class NetworkStatsLast
     {

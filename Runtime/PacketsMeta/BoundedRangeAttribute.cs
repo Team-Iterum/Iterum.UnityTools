@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace Iterum.Packets
 {
-    
+
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class BoundedRangeAttribute : Attribute
     {

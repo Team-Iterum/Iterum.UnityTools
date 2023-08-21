@@ -16,7 +16,7 @@ namespace Iterum.DataBlocks
     public class ShapeMeshData : IDataBlock
     {
         public static bool Skip = false;
-        
+
         public string Name;
 
 
@@ -27,13 +27,13 @@ namespace Iterum.DataBlocks
                 throw new Exception("Factory ShapeMeshData: MeshFilter not found");
 
             Mesh sharedMesh = meshFilter.sharedMesh;
-            
+
             var meshCollider = go.GetComponent<MeshCollider>();
 
             if (meshCollider != null && meshCollider.sharedMesh != meshFilter.sharedMesh)
                 sharedMesh = meshCollider.sharedMesh;
-            
-            if (sharedMesh.vertices.Length == 0) 
+
+            if (sharedMesh.vertices.Length == 0)
                 throw new Exception("Mesh empty");
 
 
@@ -48,7 +48,7 @@ namespace Iterum.DataBlocks
             if (!Skip)
             {
                 Debug.Log($"Run GetMeshContent");
-                
+
                 string content = GetMeshContent(sharedMesh, Vector3.zero, go.transform.lossyScale, Quaternion.identity);
 
                 string dirPath = Path.Combine(settings.SaveDataPath, "Mesh");
@@ -68,7 +68,7 @@ namespace Iterum.DataBlocks
 
         public static string GetMeshContent(Mesh mesh, Vector3 translate, Vector3 scale, Quaternion rot)
         {
-            var meshVertices = mesh.vertices;    
+            var meshVertices = mesh.vertices;
             StringBuilder vertices = new StringBuilder(meshVertices.Length);
 
             for (int j = 0; j < meshVertices.Length; j++)
@@ -76,23 +76,23 @@ namespace Iterum.DataBlocks
                 var e = meshVertices[j];
 
                 e = rot * e;
-                
-                e.x += translate.x * (1/scale.x);
-                e.y += translate.y * (1/scale.y);
-                e.z += translate.z * (1/scale.z);
-                
+
+                e.x += translate.x * (1 / scale.x);
+                e.y += translate.y * (1 / scale.y);
+                e.z += translate.z * (1 / scale.z);
+
                 e.x *= scale.x;
                 e.y *= scale.y;
                 e.z *= scale.z;
-                
-                
+
+
                 vertices.AppendFormat("\nv {0}/{1}/{2}", e.x, e.y, e.z);
 
             }
-            
+
             var meshTriangles = mesh.triangles;
             StringBuilder indices = new StringBuilder(meshTriangles.Length);
-            
+
             for (int j = 0; j < meshTriangles.Length; j++)
             {
                 int e = meshTriangles[j];

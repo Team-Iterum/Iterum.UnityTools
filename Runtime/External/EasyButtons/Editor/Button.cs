@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 namespace EasyButtons.Editor
 {
     using System.Reflection;
@@ -35,7 +35,7 @@ namespace EasyButtons.Editor
                 ? buttonAttribute.Mode == ButtonMode.EnabledInPlayMode
                 : buttonAttribute.Mode == ButtonMode.DisabledInPlayMode;
 
-            _disabled = ! (buttonAttribute.Mode == ButtonMode.AlwaysEnabled || inAppropriateMode);
+            _disabled = !(buttonAttribute.Mode == ButtonMode.AlwaysEnabled || inAppropriateMode);
         }
 
         public void Draw(IEnumerable<object> targets)

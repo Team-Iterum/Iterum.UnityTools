@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 namespace EasyButtons.Editor.Utils
 {
     using System;
@@ -41,7 +41,7 @@ namespace EasyButtons.Editor.Utils
             if (IsCustomSerializableType(type))
                 return true;
 
-            if (type.InheritsFrom(typeof(UnityEngine.Object)) && ! type.IsGenericTypeDefinition)
+            if (type.InheritsFrom(typeof(UnityEngine.Object)) && !type.IsGenericTypeDefinition)
                 return true;
 
             if (type.IsEnum)

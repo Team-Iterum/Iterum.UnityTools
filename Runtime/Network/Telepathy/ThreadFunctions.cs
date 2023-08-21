@@ -139,14 +139,14 @@ namespace Telepathy
                     if (receivePipe.Count(connectionId) >= QueueLimit)
                     {
                         // log the reason
-                        Log.Warning($"receivePipe reached limit of {QueueLimit} for connectionId {connectionId}. This can happen if network messages come in way faster than we manage to process them. Disconnecting this connection for load balancing.");
+                        // Log.Warning($"receivePipe reached limit of {QueueLimit} for connectionId {connectionId}. This can happen if network messages come in way faster than we manage to process them. Disconnecting this connection for load balancing.");
 
                         // IMPORTANT: do NOT clear the whole queue. we use one
                         // queue for all connections.
-                        //receivePipe.Clear();
+                        receivePipe.Clear();
 
                         // just break. the finally{} will close everything.
-                        break;
+                        // break;
                     }
                 }
             }

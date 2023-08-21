@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Iterum.Logs;
@@ -16,7 +16,7 @@ namespace Iterum.ThingTypes
             var tt = ThingTypes.Values.FirstOrDefault(e => e.Name == ttName);
             return tt;
         }
-        
+
         public ThingType Find(int id)
         {
             return ThingTypes.TryGetValue(id, out var tt) ? tt : default;
